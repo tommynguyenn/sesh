@@ -1,0 +1,47 @@
+/* Topbar */
+nav {
+    background-color: var(--nav-color);
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    height: 45px;
+}
+
+.navbar-links {
+    display: flex;
+}
+
+.navbar-links > a, .dropdown > a {
+    display: block;
+    color: var(--sec-color);
+    margin-right: 40px;
+    transition: 0.5s;
+    text-decoration: none;
+}
+
+.navbar-links > a:hover,  .dropdown > a:hover {
+    color: white;
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+.topbar-btn {
+    font-size: 20px;
+    background-color: var(--nav-color);
+    color: var(--sec-color);
+    border: none;
+    transition: 0.5s;
+}
+
+.topbar-btn:focus {
+    outline: 0;
+}
+
+.topbar-btn.hover:hover {
+    transform: scale(1.1);
+    color: white;
+}
+
+.vl {
+    border-left: 1px solid var(--sidebar-color);
+    height: 25px;
+    margin-right: 45px;
+}

@@ -1,0 +1,83 @@
+/* Dashboard body */
+#main-container {
+    margin: 65px 20px 20px 270px;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 50%;
+    grid-gap: 10px;
+    transition: 0.5s;
+}
+
+.dashboard {
+    background-color: var(--sidebar-color);
+    padding: 15px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    height: 45vh;
+    border-radius: 5px;
+}
+
+.dashboard-title > h1 {
+    font-size: 22px;
+    margin-top: 5px;
+    margin-bottom: 12.5px;
+}
+
+.dashboard-content {
+    overflow: scroll;
+    height: 33vh;
+}
+
+.dashboard > hr, .tab-pane.fade > hr {
+    margin-top: -1px;
+}
+
+.appointment-dashboard > .dashboard {
+    height: 44.5vh;
+}
+
+.appointment-dashboard {
+    display: grid;
+    grid-template-columns: repeat(2, 49.5%);
+    grid-gap: 0% 1%;
+}
+
+/* Buttons */
+.view-btn, .complete-btn, .delete-btn, .add-btn {
+    color: var(--sidebar-color);
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    transition: 0.5s;
+    opacity: .9;
+    border: none;
+}
+
+.add-btn {
+    background-color: var(--nav-color);
+    display: block;
+    margin: auto;
+    margin-top: 15px;
+    width: fit-content;
+}
+
+.add-btn:hover {
+    background-color: #00af89;
+    cursor: pointer;
+}
+
+/* Clients/employees pills */
+#pills-clients-tab.nav-link, #pills-employees-tab.nav-link {    
+    margin-top: -2.5px;
+    margin-bottom: -2.5px;
+    margin-right: 5px;
+    font-size: 20px;
+    color: var(--main-color);
+    padding: 1px 5px;
+    transition: 0.25s;
+}
+
+#pills-clients-tab.nav-link.active, #pills-employees-tab.nav-link.active {    
+    background-color: var(--nav-color);
+    color: var(--sidebar-color);
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
