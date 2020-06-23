@@ -13,21 +13,37 @@ const addEmployee = $('#addEmployee');
 // Appointment references
 const appEmployee = $('#addAppointment-employee');
 const appClient = $('#addAppointment-client');
-const clientIdentifier = $('#addAppointment-clientidentifier');
+const appClientIdentifier = $('#addAppointment-clientidentifier');
 const appDatetime = $('#addAppointment-datetime');
 const appType = $('#addAppointment-type');
 const appNotes = $('#addAppointment-notes');
 const appPrice = $('#addAppointment-price');
 const addAppointment = $('#addAppointment');
 
+// Waitlist references
+const wlClient = $('#addWaitlist-client');
+const wlClientIdentifier = $('#addWaitlist-clientidentifier');
+const wlType = $('#addWaitlist-type');
+const wlNotes = $('#addWaitlist-notes');
+const wlPrice = $('#addWaitlist-price');
+const addWaitlist = $('#addWaitlist');
+
 // Form button references
 const clientForm = $('#client-form');
 const employeeForm = $('#employee-form');
 const appointmentForm = $('#appointment-form');
+const waitlistForm = $('#waitlist-form');
 
 // Show message to user.
 function showMessage(message, modal) {
     modal.prepend(`<div class="alert alert-danger" role="alert">${message}</div>`);
+}
+
+// Accepts waitlisted appointment and creates a new appointment.
+function acceptWaitlisted(waid) {
+    // needs to prompt for employee, datetime
+    // create new appointment using /addappointment
+    // remove from waitlist appointments
 }
 
 // Add a new client.
@@ -38,7 +54,9 @@ addClient.click(event => {
             if (clientValue.val()) {
                 fetch('/addClient', {
                     method: 'post',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify({
                         name: clientName.val(),
                         contact: clientContact.val(),
@@ -70,7 +88,9 @@ addEmployee.click(event => {
             if (empPosition.val()) {
                 fetch('/addEmployee', {
                     method: 'post',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify({
                         name: empName.val(),
                         contact: empContact.val(),
@@ -104,7 +124,9 @@ addAppointment.click(event => {
                     if (appPrice.val()) {
                         fetch('/addAppointment', {
                             method: 'post',
-                            headers: { 'Content-Type': 'application/json' },
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
                             body: JSON.stringify({
                                 employee: appEmployee.val(),
                                 client: appClient.val(),
@@ -125,25 +147,88 @@ addAppointment.click(event => {
                     }
                 } else {
                     showMessage('Appointment notes required.', appointmentForm);
-                }  
+                }
             } else {
                 showMessage('Appointment type required.', appointmentForm);
             }
+        } else {
+            showMessage('Client required.', appointmentForm);
         }
+    } else {
+        showMessage('Employee required.', appointmentForm);
     }
 });
 
-// Changes the client's contact value on client name change.
+// Add a new waitlist appointment.
+addWaitlist.click(event => {
+    $('.alert.alert-danger').remove();
+    if (wlClient.val()) {
+        if (wlType.val()) {
+            if (wlNotes.val()) {
+                if (wlPrice.val()) {
+                    fetch('/addWaitlist', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            client: wlClient.val(),
+                            type: wlType.val(),
+                            notes: wlNotes.val(),
+                            price: wlPrice.val()
+                        })
+                    }).then(res => {
+                        if (res.ok) return res.json();
+                    }).then(response => {
+                        if (response == 'New appointment added to waitlist.') {
+                            window.location.reload();
+                        }
+                    })
+                } else {
+                    showMessage('Waitlist price required.', waitlistForm);
+                }
+            } else {
+                showMessage('Waitlist notes required.', waitlistForm);
+            }
+        } else {
+            showMessage('Waitlist type required.', waitlistForm);
+        }
+    } else {
+        showMessage('Client required.', waitlistForm);
+    }
+});
+
+// Changes the appointment modal client's contact value on client name change.
 appClient.change(event => {
     fetch('/getClientContact', {
         method: 'put',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
             name: appClient.val()
         })
     }).then(res => {
         if (res.ok) return res.json();
     }).then(response => {
-        clientIdentifier.val(response);
+        appClientIdentifier.val(response);
     })
 });
+
+// Changes the waitlist modal client's contact value on client name change.
+wlClient.change(event => {
+    fetch('/getClientContact', {
+        method: 'put',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: wlClient.val()
+        })
+    }).then(res => {
+        if (res.ok) return res.json();
+    }).then(response => {
+        wlClientIdentifier.val(response);
+    })
+});
+

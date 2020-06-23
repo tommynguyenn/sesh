@@ -1,6 +1,7 @@
 /* Dashboard body */
 #main-container {
-    margin: 65px 20px 20px 270px;
+    margin: 57.5px 20px 20px 270px;
+    padding: 5px;
     display: grid;
     grid-template-columns: 100%;
     grid-template-rows: 50%;
@@ -14,6 +15,11 @@
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
     height: 45vh;
     border-radius: 5px;
+    transition: 0.5s;
+}
+
+.dashboard:hover {
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
 }
 
 .dashboard-title > h1 {

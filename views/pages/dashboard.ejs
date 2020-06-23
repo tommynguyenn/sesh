@@ -37,7 +37,7 @@
         </div>
       </div>
       <div class="vl"></div>
-      <a>sesh</a>
+      <a id="navbar-brand">sesh</a>
     </div>
 
   </nav>
@@ -61,6 +61,7 @@
 
   <!-- Main container for content. -->
   <div id="main-container">
+    <!-- Appointments dashboard -->
     <div class="dashboard">
       <div class="dashboard-title">
         <h1>Appointments</h1>
@@ -73,8 +74,8 @@
               <th scope="col">Client</th>
               <th scope="col">Employee</th>
               <th scope="col">Date & Time</th>
-              <th scope="col">Type</th>
               <th scope="col">Price</th>
+              <th scope="col">Type</th>
               <th scope="col">Actions</th>
             </tr>
           </thead>
@@ -87,6 +88,7 @@
     </div>
 
     <div class="appointment-dashboard">
+      <!-- Waitlist dashboard -->
       <div class="dashboard">
         <div class="dashboard-title">
           <h1>Waitlist</h1>
@@ -96,42 +98,25 @@
             <thead>
               <tr>
                 <th scope="col">Position</th>
-                <th scope="col">Name</th>
-                <th scope="col">Cell #</th>
+                <th scope="col">Client</th>
+                <th scope="col">Price</th>
+                <th scope="col">Type</th>
                 <th scope="col">Notes</th>
                 <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>clientname</td>
-                <td>clientcell</td>
-                <td>clientnotes</td>
-                <td>
-                  <button class="complete-btn btn-success">Accept</button>
-                  <button class="delete-btn btn-danger">Delete</button>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>clientname</td>
-                <td>clientcell</td>
-                <td>clientnotes</td>
-                <td>
-                  <button class="complete-btn btn-success">Accept</button>
-                  <button class="delete-btn btn-danger">Delete</button>
-                </td>
-              </tr>
+              <%- waitlist %>
             </tbody>
           </table>
         </div>
         <hr>
       </div>
 
+      <!-- Client/employee dashboard -->
       <div class="dashboard">
+        <!-- Clients/employees tabs -->
         <div class="dashboard-title">
-          <!-- Clients/employees tabs -->
           <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
             <li class="nav-item">
               <a class="nav-link active" id="pills-clients-tab" data-toggle="pill" href="#pills-clients" role="tab"
@@ -145,8 +130,8 @@
         </div>
         <!-- Clients/employees tab content -->
         <div class="tab-content" id="pills-tabContent">
+          <!-- Clients table -->
           <div class="tab-pane fade show active" id="pills-clients" role="tabpanel" aria-labelledby="pills-clients-tab">
-            <!-- Clients table -->
             <div class="dashboard-content">
               <table class="table table-hover">
                 <thead>
@@ -164,8 +149,8 @@
             </div>
             <hr>
           </div>
+          <!-- Employees table -->
           <div class="tab-pane fade" id="pills-employees" role="tabpanel" aria-labelledby="pills-employees-tab">
-            <!-- Employees table -->
             <div class="dashboard-content">
               <table class="table table-hover">
                 <thead>
@@ -329,16 +314,45 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="appointmentModalLabel">Add to waitlist</h5>
+          <h5 class="modal-title" id="waitlistModalLabel">Add to waitlist</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
-          ...
+        <div id="waitlist-form" class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="addWaitlist-client">Client</label>
+              <select class="form-control" id="addWaitlist-client">
+                <%- modalClients %>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="addWaitlist-clientidentifier">Client's Contact</label>
+              <input type="text" class="form-control" id="addWaitlist-clientidentifier" value="<%=firstClient.clientContact%>" disabled>
+            </div>
+            <div class="form-group">
+              <label for="addWaitlist-price">Price</label>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">$</span>
+                </div>
+                <input type="number" id="addWaitlist-price" class="form-control" value="0.00">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="addWaitlist-type">Type</label>
+              <!-- Maybe this can be a select field -->
+              <input type="text" class="form-control" id="addWaitlist-type">
+            </div>
+            <div class="form-group">
+              <label for="addWaitlist-notes">Notes</label>
+              <textarea class="form-control" id="addWaitlist-notes" rows="2"></textarea>
+            </div>
+          </form>
         </div>
         <div class="modal-footer">
-          <button class="add-btn">Add</button>
+          <button id="addWaitlist" class="add-btn">Add</button>
         </div>
       </div>
     </div>

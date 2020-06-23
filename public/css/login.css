@@ -43,3 +43,8 @@ form > h1 {
     margin-top: 10px;
     font-size: 20px;
 }
+
+.alert-small {
+    margin-top: -10px;
+    padding: 5px 10px;
+}

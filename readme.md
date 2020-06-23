@@ -9,3 +9,7 @@ sesh was built with:
 [-](https://github.com/tommynguyenn/sesh)
 
 NOTES:
+- individual views
+- company views
+- insights
+- waitlist

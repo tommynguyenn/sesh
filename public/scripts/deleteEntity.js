@@ -48,3 +48,20 @@ function deleteAppointment(aid) {
         }
     })
 }
+
+// Deletes the specified waitlist appointment from the database.
+function deleteWaitlist(aid) {
+    fetch('/deleteWaitlist', {
+        method: 'delete',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            wlAppointmentId: aid
+        })
+    }).then(res => {
+        if (res.ok) return res.json();
+    }).then(response => {
+        if (response == `Waitlist appointment ${aid} deleted.`) {
+            window.location.reload();
+        }
+    })
+}

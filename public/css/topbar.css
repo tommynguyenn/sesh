@@ -17,10 +17,14 @@ nav {
     text-decoration: none;
 }
 
-.navbar-links > a:hover,  .dropdown > a:hover {
+.navbar-links > a:not(#navbar-brand):hover,  .dropdown > a:hover {
     color: white;
     transform: scale(1.1);
     cursor: pointer;
+}
+
+#navbar-brand:hover {
+    color: white;
 }
 
 .topbar-btn {

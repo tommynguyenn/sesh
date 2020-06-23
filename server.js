@@ -11,6 +11,7 @@ const session = require('express-session');
 
 /* Initialize application */
 const express = require('express');
+const e = require('express');
 const app = express();
 
 /***************
@@ -114,8 +115,8 @@ function appointmentTemplate(appointmentArr, session) {
                 <td>${findClientName(appointment.clientId, session)}</td>
                 <td>${findEmployeeName(appointment.employeeId, session)}</td>
                 <td>${date}</td>
-                <td>${appointment.apptType}</td>
                 <td>$${appointment.apptPrice.toFixed(2)}</td>
+                <td>${appointment.apptType}</td>
                 <td>
                     <button type="button" data-container="body" data-toggle="popover" data-placement="left" data-content="${appointment.apptNotes}" class="view-btn btn-info">Notes</button>
                     <button onclick="deleteAppointment('${appointment._id}')" class="delete-btn btn-danger">Delete</button>
@@ -170,6 +171,30 @@ function employeeTemplate(employeeArr) {
     return employeeHtml;
 }
 
+// Waitlist template
+function waitlistTemplate(waitlistArr, session) {
+    let waitlistHtml = '';
+
+    waitlistArr.forEach((wlAppointment, index) => {
+        let clientName = findClientName(wlAppointment.clientId, session);
+
+        waitlistHtml +=
+            `<tr>
+                <th scope="row">${index + 1}</th>
+                <td>${clientName}</td>
+                <td>$${wlAppointment.waitlistPrice.toFixed(2)}</td>
+                <td>${wlAppointment.waitlistType}</td>
+                <td>${wlAppointment.waitlistNotes}</td>
+                <td>
+
+                    <button onclick="deleteWaitlist('${wlAppointment._id}')" class="delete-btn btn-danger">Delete</button>
+                </td>
+            </tr>`
+    });
+
+    return waitlistHtml;
+}
+
 // Appointment modal, clients template
 function modalClientTemplate(clientArr) {
     let clientHtml = '';
@@ -201,7 +226,7 @@ function modalEmployeeTemplate(employeeArr) {
 // Redirect basic URL to login.
 app.get('/', (req, res) => {
     res.render('pages/login', {
-        message: 'Welcome to sesh!'
+        message: `<div class="alert alert-primary alert-small" role="alert">Welcome to sesh!</div>`
     });
 });
 
@@ -217,7 +242,7 @@ app.get('/login', (req, res) => {
                 res.redirect('/dashboard');
             } else {
                 res.render('pages/login', {
-                    message: 'Invalid login credentials'
+                    message: `<div class="alert alert-danger alert-small" role="alert">Invalid login credentials</div>`
                 });
             }
         });
@@ -243,7 +268,8 @@ app.get('/dashboard', (req, res) => {
                 data: null,
                 appointments: null,
                 clients: null,
-                employees: null
+                employees: null,
+                waitlist: null
             }
 
             db = client.db(req.session.companyId);
@@ -251,6 +277,7 @@ app.get('/dashboard', (req, res) => {
             collections.appointments = db.collection('appointments');
             collections.clients = db.collection('clients');
             collections.employees = db.collection('employees');
+            collections.waitlist = db.collection('waitlist');
 
             console.log(`Connected to mongoDB [${req.session.companyId}] database.`);
 
@@ -273,16 +300,29 @@ app.get('/dashboard', (req, res) => {
                             collections.employees.find().toArray().then(empArr => {
                                 req.session.employees = empArr;
                             }).then(result => {
-                                res.render('pages/dashboard', {
-                                    companyName: req.session.data,
-                                    appointments: appointmentTemplate(req.session.appointments, req.session),
-                                    clients: clientTemplate(req.session.clients),
-                                    employees: employeeTemplate(req.session.employees),
-                                    modalEmployees: modalEmployeeTemplate(req.session.employees),
-                                    modalClients: modalClientTemplate(req.session.clients),
-                                    firstClient: req.session.clients[0],
-                                    // waitlist: 
-                                });
+                                // Sets employees array.
+                                collections.waitlist.find().toArray().then(waitlistArr => {
+                                    req.session.waitlist = waitlistArr;
+                                }).then(result => {
+                                    let first = {
+                                        clientContact: ' '
+                                    }
+
+                                    if (req.session.clients[0] != undefined) {
+                                        first.clientContact = req.session.clients[0].clientContact;
+                                    }
+
+                                    res.render('pages/dashboard', {
+                                        companyName: req.session.data,
+                                        appointments: appointmentTemplate(req.session.appointments, req.session),
+                                        clients: clientTemplate(req.session.clients),
+                                        employees: employeeTemplate(req.session.employees),
+                                        waitlist: waitlistTemplate(req.session.waitlist, req.session),
+                                        modalEmployees: modalEmployeeTemplate(req.session.employees),
+                                        modalClients: modalClientTemplate(req.session.clients),
+                                        firstClient: first,
+                                    });
+                                }).catch(error => console.log(error));
                             }).catch(error => console.log(error));
                         }).catch(error => console.log(error));
                     }).catch(error => console.log(error));
@@ -299,17 +339,79 @@ app.get('/dashboard', (req, res) => {
 
 // Load clients.
 app.get('/clients', (req, res) => {
-    res.render('pages/clients'); 
+    res.render('pages/clients');
 });
 
 // Load employees.
 app.get('/employees', (req, res) => {
-    res.render('pages/employees'); 
+    res.render('pages/employees');
 });
 
 // Load appointments.
 app.get('/appointments', (req, res) => {
-    res.render('pages/appointments'); 
+    if (req.session.logged) {
+        MongoClient.connect(connectionString, {
+            useUnifiedTopology: true
+        }).then(client => {
+            let db;
+            let collections = {
+                appointments: null,
+                clients: null,
+                employees: null,
+                waitlist: null
+            }
+
+            db = client.db(req.session.companyId);
+            collections.appointments = db.collection('appointments');
+            collections.clients = db.collection('clients');
+            collections.employees = db.collection('employees');
+            collections.waitlist = db.collection('waitlist');
+
+            console.log(`Connected to mongoDB [${req.session.companyId}] database.`);
+
+            // Sets appointments array.
+            collections.appointments.find().sort({
+                apptDatetime: 1
+            }).toArray().then(appArr => {
+                req.session.appointments = appArr;
+            }).then(result => {
+                // Sets clients array.
+                collections.clients.find().toArray().then(cliArr => {
+                    req.session.clients = cliArr;
+                }).then(result => {
+                    // Sets employees array.
+                    collections.employees.find().toArray().then(empArr => {
+                        req.session.employees = empArr;
+                    }).then(result => {
+                        // Sets employees array.
+                        collections.waitlist.find().toArray().then(waitlistArr => {
+                            req.session.waitlist = waitlistArr;
+                        }).then(result => {
+                            let first = {
+                                clientContact: ' '
+                            }
+
+                            if (req.session.clients[0] != undefined) {
+                                first.clientContact = req.session.clients[0].clientContact;
+                            }
+
+                            res.render('pages/appointments', {
+                                companyName: req.session.data,
+                                appointments: appointmentTemplate(req.session.appointments, req.session),
+                                modalEmployees: modalEmployeeTemplate(req.session.employees),
+                                modalClients: modalClientTemplate(req.session.clients),
+                                firstClient: first,
+                            });
+                        }).catch(error => console.log(error));
+                    }).catch(error => console.log(error));
+                }).catch(error => console.log(error));
+            }).catch(error => console.log(error));
+        }).catch(error => console.log(error));
+    } else {
+        res.render('pages/login', {
+            message: 'Login required.'
+        });
+    }
 });
 
 // Access client profile.
@@ -426,20 +528,69 @@ app.post('/addAppointment', (req, res) => {
 
         db = client.db(req.session.companyId);
         appointments = db.collection('appointments');
+        clients = db.collection('clients');
+        employees = db.collection('employees');
 
         appointments.insertOne({
             apptType: newAppointment.type,
             apptNotes: newAppointment.notes,
             apptPrice: newAppointment.price,
             apptDatetime: newAppointment.datetime,
-            clientId: findClientId(newAppointment.client, req.session),
-            employeeId: findEmployeeId(newAppointment.employee, req.session),
+            clientId: ObjectId(findClientId(newAppointment.client, req.session)),
+            employeeId: ObjectId(findEmployeeId(newAppointment.employee, req.session)),
             completed: false
+        }).then(result => {
+            clients.updateOne({
+                _id: ObjectId(findClientId(newAppointment.client, req.session))
+            }, {
+                $inc: {
+                    clientValue: newAppointment.price
+                },
+                $push: {
+                    clientAppointments: ObjectId(result.insertedId)
+                }
+            });
+            employees.updateOne({
+                _id: ObjectId(findEmployeeId(newAppointment.employee, req.session)),
+            }, {
+                $push: {
+                    empAppointments: ObjectId(result.insertedId)
+                }
+            });
+            res.json('New appointment added.');
         });
-
-        res.json('New appointment added.');
     }).catch(error => console.log(error));
 });
+
+// Add an appointment to the waitlist on the database.
+app.post('/addWaitlist', (req, res) => {
+    const newWaitlist = {
+        client: req.body.client,
+        type: req.body.type,
+        notes: req.body.notes,
+        price: parseFloat(req.body.price)
+    }
+
+    MongoClient.connect(connectionString, {
+        useUnifiedTopology: true
+    }).then(client => {
+        let db;
+        let waitlist;
+
+        db = client.db(req.session.companyId);
+        waitlist = db.collection('waitlist');
+
+        waitlist.insertOne({
+            waitlistType: newWaitlist.type,
+            waitlistNotes: newWaitlist.notes,
+            waitlistPrice: newWaitlist.price,
+            clientId: ObjectId(findClientId(newWaitlist.client, req.session))
+        });
+
+        res.json('New appointment added to waitlist.');
+    }).catch(error => console.log(error));
+});
+
 
 // Gets the contact of the current client.
 app.put('/getClientContact', (req, res) => {
@@ -494,7 +645,7 @@ app.delete('/deleteEmployee', (req, res) => {
     }).catch(error => console.log(error));
 });
 
-// Deletes the specified appointmnt from the database.
+// Deletes the specified appointment from the database.
 app.delete('/deleteAppointment', (req, res) => {
     const appointmentId = req.body.appointmentId;
 
@@ -506,12 +657,72 @@ app.delete('/deleteAppointment', (req, res) => {
 
         db = client.db(req.session.companyId);
         appointments = db.collection('appointments');
+        clients = db.collection('clients');
+        employees = db.collection('employees');
 
-        appointments.deleteOne({
-            _id: ObjectId(appointmentId)
-        });
+        appointments.find().toArray().then(apptArr => {
+            apptArr.forEach(appointment => {
+                if (appointment._id == appointmentId) {
+                    const deleteAppt = {
+                        clientId: appointment.clientId,
+                        employeeId: appointment.employeeId,
+                        price: appointment.apptPrice
+                    }
 
-        res.json(`Appointment ${appointmentId} deleted.`);
+                    clients.updateOne({
+                        _id: deleteAppt.clientId
+                    }, {
+                        $inc: {
+                            clientValue: -parseFloat(deleteAppt.price)
+                        },
+                        $pull: {
+                            clientAppointments: ObjectId(appointmentId)
+                        }
+                    });
+
+                    employees.updateOne({
+                        _id: deleteAppt.employeeId
+                    }, {
+                        $pull: {
+                            empAppointments: ObjectId(appointmentId)
+                        }
+                    });
+
+                    appointments.deleteOne({
+                        _id: ObjectId(appointmentId)
+                    });
+
+                    res.json(`Appointment ${appointmentId} deleted.`);
+                }
+            });
+        })
+    }).catch(error => console.log(error));
+});
+
+// Deletes the specified appointment from the waitlist in the database.
+app.delete('/deleteWaitlist', (req, res) => {
+    const wlAppointmentId = req.body.wlAppointmentId;
+
+    MongoClient.connect(connectionString, {
+        useUnifiedTopology: true
+    }).then(client => {
+        let db;
+        let waitlist;
+
+        db = client.db(req.session.companyId);
+        waitlist = db.collection('waitlist');
+
+        waitlist.find().toArray().then(wlApptArr => {
+            wlApptArr.forEach(appointment => {
+                if (appointment._id == wlAppointmentId) {
+                    waitlist.deleteOne({
+                        _id: ObjectId(wlAppointmentId)
+                    });
+
+                    res.json(`Waitlist appointment ${wlAppointmentId} deleted.`);
+                }
+            });
+        })
     }).catch(error => console.log(error));
 });
 
