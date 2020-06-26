@@ -300,7 +300,7 @@ app.get('/dashboard', (req, res) => {
                             collections.employees.find().toArray().then(empArr => {
                                 req.session.employees = empArr;
                             }).then(result => {
-                                // Sets employees array.
+                                // Sets waitlist array.
                                 collections.waitlist.find().toArray().then(waitlistArr => {
                                     req.session.waitlist = waitlistArr;
                                 }).then(result => {
@@ -339,12 +339,103 @@ app.get('/dashboard', (req, res) => {
 
 // Load clients.
 app.get('/clients', (req, res) => {
-    res.render('pages/clients');
+    if (req.session.logged) {
+        MongoClient.connect(connectionString, {
+            useUnifiedTopology: true
+        }).then(client => {
+            let db;
+            let collections = {
+                clients: null,
+                waitlist: null
+            }
+
+            db = client.db(req.session.companyId);
+            collections.clients = db.collection('clients');
+            collections.waitlist = db.collection('waitlist');
+
+            console.log(`Connected to mongoDB [${req.session.companyId}] database.`);
+            // Sets clients array.
+            collections.clients.find().toArray().then(cliArr => {
+                req.session.clients = cliArr;
+            }).then(result => {
+                // Sets waitlist array.
+                collections.waitlist.find().toArray().then(waitlistArr => {
+                    req.session.waitlist = waitlistArr;
+                }).then(result => {
+                    let first = {
+                        clientContact: ' '
+                    }
+
+                    if (req.session.clients[0] != undefined) {
+                        first.clientContact = req.session.clients[0].clientContact;
+                    }
+
+                    res.render('pages/clients', {
+                        companyName: req.session.data,
+                        clients: clientTemplate(req.session.clients),
+                        modalEmployees: modalEmployeeTemplate(req.session.employees),
+                        modalClients: modalClientTemplate(req.session.clients),
+                        firstClient: first,
+                    });
+                }).catch(error => console.log(error));
+            }).catch(error => console.log(error));
+        }).catch(error => console.log(error));
+    } else {
+        res.render('pages/login', {
+            message: 'Login required.'
+        });
+    }
 });
 
 // Load employees.
 app.get('/employees', (req, res) => {
-    res.render('pages/employees');
+    if (req.session.logged) {
+        MongoClient.connect(connectionString, {
+            useUnifiedTopology: true
+        }).then(client => {
+            let db;
+            let collections = {
+                employees: null,
+                waitlist: null
+            }
+
+            db = client.db(req.session.companyId);
+            collections.employees = db.collection('employees');
+            collections.waitlist = db.collection('waitlist');
+
+            console.log(`Connected to mongoDB [${req.session.companyId}] database.`);
+
+            // Sets employees array.
+            collections.employees.find().toArray().then(empArr => {
+                req.session.employees = empArr;
+            }).then(result => {
+                // Sets waitlist array.
+                collections.waitlist.find().toArray().then(waitlistArr => {
+                    req.session.waitlist = waitlistArr;
+                }).then(result => {
+                    let first = {
+                        clientContact: ' '
+                    }
+
+                    if (req.session.clients[0] != undefined) {
+                        first.clientContact = req.session.clients[0].clientContact;
+                    }
+
+                    res.render('pages/employees', {
+                        companyName: req.session.data,
+                        employees: employeeTemplate(req.session.employees),
+                        modalEmployees: modalEmployeeTemplate(req.session.employees),
+                        modalClients: modalClientTemplate(req.session.clients),
+                        firstClient: first,
+                    });
+                }).catch(error => console.log(error));
+            }).catch(error => console.log(error));
+        }).catch(error => console.log(error));
+    } else {
+        res.render('pages/login', {
+            message: 'Login required.'
+        });
+    }
 });
 
 // Load appointments.
@@ -383,7 +474,7 @@ app.get('/appointments', (req, res) => {
                     collections.employees.find().toArray().then(empArr => {
                         req.session.employees = empArr;
                     }).then(result => {
-                        // Sets employees array.
+                        // Sets waitlist array.
                         collections.waitlist.find().toArray().then(waitlistArr => {
                             req.session.waitlist = waitlistArr;
                         }).then(result => {
@@ -422,7 +513,9 @@ app.get('/clients/:clientId', (req, res) => {
         if (client._id == req.params.clientId) {
             console.log(client);
             clientProfile = client;
-            res.render('pages/individuals/client');
+            res.render('pages/individuals/client', {
+                client: clientProfile
+            });
         }
     });
 });
@@ -435,7 +528,9 @@ app.get('/employees/:employeeId', (req, res) => {
         if (employee._id == req.params.employeeId) {
             console.log(employee);
             employeeProfile = employee;
-            res.render('pages/individuals/employee');
+            res.render('pages/individuals/employee', {
+                employee: employeeProfile
+            });
         }
     });
 });
@@ -448,7 +543,9 @@ app.get('/appointments/:appointmentId', (req, res) => {
         if (appointment._id == req.params.appointmentId) {
             console.log(appointment);
             appointmentProfile = appointment;
-            res.render('pages/individuals/appointment');
+            res.render('pages/individuals/appointment', {
+                appointment: appointmentProfile
+            });
         }
     });
 });

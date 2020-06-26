@@ -13,7 +13,7 @@
     background-color: var(--sidebar-color);
     padding: 15px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-    height: 45vh;
+    height: fit-content;
     border-radius: 5px;
     transition: 0.5s;
 }
@@ -37,11 +37,11 @@
     margin-top: -1px;
 }
 
-.appointment-dashboard > .dashboard {
+.btm-dashboard > .dashboard {
     height: 44.5vh;
 }
 
-.appointment-dashboard {
+.btm-dashboard {
     display: grid;
     grid-template-columns: repeat(2, 49.5%);
     grid-gap: 0% 1%;

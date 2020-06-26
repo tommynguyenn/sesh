@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sesh | dashboard</title>
+    <title>sesh | clients</title>
 
     <!-- Bootstrap CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -62,67 +62,30 @@
 
     <!-- Main container for content. -->
     <div id="main-container">
-        <div class="appointment-dashboard">
-            <!-- Client/employee dashboard -->
-            <div class="dashboard">
-                <!-- Clients/employees tabs -->
-                <div class="dashboard-title">
-                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="pills-clients-tab" data-toggle="pill" href="#pills-clients"
-                                role="tab" aria-controls="pills-clients" aria-selected="true">Clients</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-employees-tab" data-toggle="pill" href="#pills-employees"
-                                role="tab" aria-controls="pills-employees" aria-selected="false">Employees</a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- Clients/employees tab content -->
-                <div class="tab-content" id="pills-tabContent">
-                    <!-- Clients table -->
-                    <div class="tab-pane fade show active" id="pills-clients" role="tabpanel"
-                        aria-labelledby="pills-clients-tab">
-                        <div class="dashboard-content">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Cell #</th>
-                                        <th scope="col">Lifetime Value</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <%- clients %>
-                                </tbody>
-                            </table>
-                        </div>
-                        <hr>
-                    </div>
-                    <!-- Employees table -->
-                    <div class="tab-pane fade" id="pills-employees" role="tabpanel"
-                        aria-labelledby="pills-employees-tab">
-                        <div class="dashboard-content">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Cell #</th>
-                                        <th scope="col">Position</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <%- employees %>
-                                </tbody>
-                            </table>
-                        </div>
-                        <hr>
-                    </div>
-                </div>
+        <!-- Client dashboard -->
+        <div class="dashboard">
+            <div class="dashboard-title">
+                <h1>Clients</h1>
             </div>
+            <div class="dashboard-content">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Cell #</th>
+                            <th scope="col">Lifetime Value</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%- clients %>
+                    </tbody>
+                </table>
+            </div>
+            <hr>
         </div>
+    </div>
+    </div>
     </div>
 
     <!-- Appointment modal -->
