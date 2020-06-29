@@ -30,7 +30,7 @@
 
 .dashboard-content {
     overflow: scroll;
-    height: 33vh;
+    height: 35.5vh;
 }
 
 .dashboard > hr, .tab-pane.fade > hr {
@@ -80,6 +80,10 @@
     color: var(--main-color);
     padding: 1px 5px;
     transition: 0.25s;
+}
+
+#pills-clients-tab.nav-link:hover, #pills-employees-tab.nav-link:hover {    
+    color: var(--nav-color);
 }
 
 #pills-clients-tab.nav-link.active, #pills-employees-tab.nav-link.active {    

@@ -26,8 +26,7 @@ app.use(express.static('public'));
 
 app.use(session({
     name: 'seshapp',
-    secret: 'secret',
-    // secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET,
     secure: true,
     resave: false,
     saveUninitialized: false
@@ -318,6 +317,10 @@ app.get('/dashboard', (req, res) => {
                                         clients: clientTemplate(req.session.clients),
                                         employees: employeeTemplate(req.session.employees),
                                         waitlist: waitlistTemplate(req.session.waitlist, req.session),
+                                        count: [req.session.appointments.length,
+                                                req.session.clients.length,
+                                                req.session.employees.length,
+                                                req.session.waitlist.length],
                                         modalEmployees: modalEmployeeTemplate(req.session.employees),
                                         modalClients: modalClientTemplate(req.session.clients),
                                         firstClient: first,
@@ -332,7 +335,7 @@ app.get('/dashboard', (req, res) => {
         }).catch(error => console.log(error));
     } else {
         res.render('pages/login', {
-            message: 'Login required.'
+            message: `<div class="alert alert-warning alert-small" role="alert">Login required.</div>`
         });
     }
 });
@@ -373,6 +376,7 @@ app.get('/clients', (req, res) => {
                     res.render('pages/clients', {
                         companyName: req.session.data,
                         clients: clientTemplate(req.session.clients),
+                        count: [req.session.clients.length],
                         modalEmployees: modalEmployeeTemplate(req.session.employees),
                         modalClients: modalClientTemplate(req.session.clients),
                         firstClient: first,
@@ -382,7 +386,7 @@ app.get('/clients', (req, res) => {
         }).catch(error => console.log(error));
     } else {
         res.render('pages/login', {
-            message: 'Login required.'
+            message: `<div class="alert alert-warning alert-small" role="alert">Login required.</div>`
         });
     }
 });
@@ -424,6 +428,7 @@ app.get('/employees', (req, res) => {
                     res.render('pages/employees', {
                         companyName: req.session.data,
                         employees: employeeTemplate(req.session.employees),
+                        count: [req.session.employees.length],
                         modalEmployees: modalEmployeeTemplate(req.session.employees),
                         modalClients: modalClientTemplate(req.session.clients),
                         firstClient: first,
@@ -433,7 +438,7 @@ app.get('/employees', (req, res) => {
         }).catch(error => console.log(error));
     } else {
         res.render('pages/login', {
-            message: 'Login required.'
+            message: `<div class="alert alert-warning alert-small" role="alert">Login required.</div>`
         });
     }
 });
@@ -489,6 +494,7 @@ app.get('/appointments', (req, res) => {
                             res.render('pages/appointments', {
                                 companyName: req.session.data,
                                 appointments: appointmentTemplate(req.session.appointments, req.session),
+                                count: [req.session.appointments.length],
                                 modalEmployees: modalEmployeeTemplate(req.session.employees),
                                 modalClients: modalClientTemplate(req.session.clients),
                                 firstClient: first,
@@ -500,7 +506,73 @@ app.get('/appointments', (req, res) => {
         }).catch(error => console.log(error));
     } else {
         res.render('pages/login', {
-            message: 'Login required.'
+            message: `<div class="alert alert-warning alert-small" role="alert">Login required.</div>`
+        });
+    }
+});
+
+// Load insights.
+app.get('/insights', (req, res) => {
+    if (req.session.logged) {
+        MongoClient.connect(connectionString, {
+            useUnifiedTopology: true
+        }).then(client => {
+            let db;
+            let collections = {
+                appointments: null,
+                clients: null,
+                employees: null,
+                waitlist: null
+            }
+
+            db = client.db(req.session.companyId);
+            collections.appointments = db.collection('appointments');
+            collections.clients = db.collection('clients');
+            collections.employees = db.collection('employees');
+            collections.waitlist = db.collection('waitlist');
+
+            console.log(`Connected to mongoDB [${req.session.companyId}] database.`);
+
+            // Sets appointments array.
+            collections.appointments.find().sort({
+                apptDatetime: 1
+            }).toArray().then(appArr => {
+                req.session.appointments = appArr;
+            }).then(result => {
+                // Sets clients array.
+                collections.clients.find().toArray().then(cliArr => {
+                    req.session.clients = cliArr;
+                }).then(result => {
+                    // Sets employees array.
+                    collections.employees.find().toArray().then(empArr => {
+                        req.session.employees = empArr;
+                    }).then(result => {
+                        // Sets waitlist array.
+                        collections.waitlist.find().toArray().then(waitlistArr => {
+                            req.session.waitlist = waitlistArr;
+                        }).then(result => {
+                            let first = {
+                                clientContact: ' '
+                            }
+
+                            if (req.session.clients[0] != undefined) {
+                                first.clientContact = req.session.clients[0].clientContact;
+                            }
+
+                            res.render('pages/insights', {
+                                companyName: req.session.data,
+                                modalEmployees: modalEmployeeTemplate(req.session.employees),
+                                modalClients: modalClientTemplate(req.session.clients),
+                                firstClient: first,
+                            });
+                        }).catch(error => console.log(error));
+                    }).catch(error => console.log(error));
+                }).catch(error => console.log(error));
+            }).catch(error => console.log(error));
+        }).catch(error => console.log(error));
+    } else {
+        res.render('pages/login', {
+            message: `<div class="alert alert-warning alert-small" role="alert">Login required.</div>`
         });
     }
 });
@@ -687,7 +759,6 @@ app.post('/addWaitlist', (req, res) => {
         res.json('New appointment added to waitlist.');
     }).catch(error => console.log(error));
 });
-
 
 // Gets the contact of the current client.
 app.put('/getClientContact', (req, res) => {

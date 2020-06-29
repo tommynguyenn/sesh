@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/topbar.css">
     <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/company-main.css">
 </head>
 
 <body>
@@ -23,7 +24,7 @@
     <nav class="navbar fixed-top">
         <button id="sidebar-toggler" class="topbar-btn hover">&#9776;</button>
         <div class="navbar-links">
-            <a>Insights</a>
+            <a href="/insights">Insights</a>
             <div class="dropdown">
                 <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
@@ -62,10 +63,10 @@
 
     <!-- Main container for content. -->
     <div id="main-container">
-        <!-- Client dashboard -->
+        <!-- Clients dashboard -->
         <div class="dashboard">
             <div class="dashboard-title">
-                <h1>Clients</h1>
+                <h1>Clients (<%= count[0] %>)</h1>
             </div>
             <div class="dashboard-content">
                 <table class="table table-hover">
@@ -82,7 +83,6 @@
                     </tbody>
                 </table>
             </div>
-            <hr>
         </div>
     </div>
     </div>

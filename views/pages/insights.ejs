@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sesh | employees</title>
+    <title>sesh | insights</title>
 
     <!-- Bootstrap CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/topbar.css">
     <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/company-main.css">
+    <link rel="stylesheet" href="css/insights-main.css">
 </head>
 
 <body>
@@ -41,7 +41,6 @@
             <div class="vl"></div>
             <a id="navbar-brand">sesh</a>
         </div>
-
     </nav>
 
     <!-- Collapsible dashboard sidebar. -->
@@ -63,29 +62,30 @@
 
     <!-- Main container for content. -->
     <div id="main-container">
-        <!-- Employees dashboard -->
-        <div class="dashboard">
-            <div class="dashboard-title">
-                <h1>Employees (<%= count[0] %>)</h1>
+        <div id="insights">
+            <div class="dashboard">
+                <h1>Insights</h1>
             </div>
-            <div class="dashboard-content">
-                <table class="table table-hover">
-                    <thead>
-                      <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Cell #</th>
-                        <th scope="col">Position</th>
-                        <th scope="col">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <%- employees %>
-                    </tbody>
-                  </table>
+            <div id="upper-insights">
+                <div class="dashboard">
+                    <h1>Revenue</h1>
+                    <p>$9999</p>
+                </div>
+                <div class="dashboard">
+                    <h1>Bookings</h1>
+                    <p>99 bookings</p>
+                </div>
+                <div class="dashboard">
+                    <h1>Clients</h1>
+                    <p>99 new clients</p>
+                </div>
+            </div>
+            <div id="lower-insights">
+                <div class="dashboard">
+
+                </div>
             </div>
         </div>
-    </div>
-    </div>
     </div>
 
     <!-- Appointment modal -->
