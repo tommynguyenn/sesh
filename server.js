@@ -8,6 +8,7 @@ const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectID;
 const moment = require('moment');
 const session = require('express-session');
+const Chart = require('chart.js');
 
 /* Initialize application */
 const express = require('express');
@@ -26,7 +27,8 @@ app.use(express.static('public'));
 
 app.use(session({
     name: 'seshapp',
-    secret: process.env.SESSION_SECRET,
+    secret: 'sec',
+    // secret: process.env.SESSION_SECRET,
     secure: true,
     resave: false,
     saveUninitialized: false
@@ -97,9 +99,8 @@ function appointmentTemplate(appointmentArr, session) {
     let appointmentHtml = '';
 
     appointmentArr.forEach(appointment => {
-        // Convert to proper date (inc by 1 day).
         let date = new Date(`${appointment.apptDatetime}`);
-        date = moment(date.toISOString()).add(1, 'd');
+        date = moment(date.toISOString());
         date = date.format("MMM DD, YYYY @ h:mm a");
 
         let state = appointment.completed ? true : false;
@@ -278,8 +279,6 @@ app.get('/dashboard', (req, res) => {
             collections.employees = db.collection('employees');
             collections.waitlist = db.collection('waitlist');
 
-            console.log(`Connected to mongoDB [${req.session.companyId}] database.`);
-
             collections.data.find().toArray().then(dataArray => {
                 // Assumed only one app user.
                 dataArray.forEach(data => {
@@ -318,9 +317,10 @@ app.get('/dashboard', (req, res) => {
                                         employees: employeeTemplate(req.session.employees),
                                         waitlist: waitlistTemplate(req.session.waitlist, req.session),
                                         count: [req.session.appointments.length,
-                                                req.session.clients.length,
-                                                req.session.employees.length,
-                                                req.session.waitlist.length],
+                                            req.session.clients.length,
+                                            req.session.employees.length,
+                                            req.session.waitlist.length
+                                        ],
                                         modalEmployees: modalEmployeeTemplate(req.session.employees),
                                         modalClients: modalClientTemplate(req.session.clients),
                                         firstClient: first,
@@ -356,7 +356,6 @@ app.get('/clients', (req, res) => {
             collections.clients = db.collection('clients');
             collections.waitlist = db.collection('waitlist');
 
-            console.log(`Connected to mongoDB [${req.session.companyId}] database.`);
             // Sets clients array.
             collections.clients.find().toArray().then(cliArr => {
                 req.session.clients = cliArr;
@@ -406,8 +405,6 @@ app.get('/employees', (req, res) => {
             db = client.db(req.session.companyId);
             collections.employees = db.collection('employees');
             collections.waitlist = db.collection('waitlist');
-
-            console.log(`Connected to mongoDB [${req.session.companyId}] database.`);
 
             // Sets employees array.
             collections.employees.find().toArray().then(empArr => {
@@ -462,8 +459,6 @@ app.get('/appointments', (req, res) => {
             collections.clients = db.collection('clients');
             collections.employees = db.collection('employees');
             collections.waitlist = db.collection('waitlist');
-
-            console.log(`Connected to mongoDB [${req.session.companyId}] database.`);
 
             // Sets appointments array.
             collections.appointments.find().sort({
@@ -531,7 +526,81 @@ app.get('/insights', (req, res) => {
             collections.employees = db.collection('employees');
             collections.waitlist = db.collection('waitlist');
 
-            console.log(`Connected to mongoDB [${req.session.companyId}] database.`);
+            // Sets appointments array.
+            collections.appointments.find().sort({
+                apptDatetime: 1
+            }).toArray().then(appArr => {
+                req.session.appointments = appArr;
+            }).then(result => {
+                // Sets clients array.
+                collections.clients.find().toArray().then(cliArr => {
+                    req.session.clients = cliArr;
+                }).then(result => {
+                    // Sets employees array.
+                    collections.employees.find().toArray().then(empArr => {
+                        req.session.employees = empArr;
+                    }).then(result => {
+                        // Sets waitlist array.
+                        collections.waitlist.find().toArray().then(waitlistArr => {
+                            req.session.waitlist = waitlistArr;
+                        }).then(result => {
+                            let first = {
+                                clientContact: ' '
+                            }
+
+                            if (req.session.clients[0] != undefined) {
+                                first.clientContact = req.session.clients[0].clientContact;
+                            }
+
+                            let rev = 0;
+                            req.session.appointments.forEach(appt => {
+                                rev += appt.apptPrice;
+                            });
+
+                            insightArr = {
+                                revenue: rev,
+                                bookings: req.session.appointments.length,
+                                clients: req.session.clients.length
+                            };
+
+                            res.render('pages/insights', {
+                                companyName: req.session.data,
+                                insights: insightArr,
+                                modalEmployees: modalEmployeeTemplate(req.session.employees),
+                                modalClients: modalClientTemplate(req.session.clients),
+                                firstClient: first,
+                            });
+                        }).catch(error => console.log(error));
+                    }).catch(error => console.log(error));
+                }).catch(error => console.log(error));
+            }).catch(error => console.log(error));
+        }).catch(error => console.log(error));
+    } else {
+        res.render('pages/login', {
+            message: `<div class="alert alert-warning alert-small" role="alert">Login required.</div>`
+        });
+    }
+});
+
+// Access client profile.
+app.get('/clients/:clientId', (req, res) => {
+    if (req.session.logged) {
+        MongoClient.connect(connectionString, {
+            useUnifiedTopology: true
+        }).then(client => {
+            let db;
+            let collections = {
+                appointments: null,
+                clients: null,
+                employees: null,
+                waitlist: null
+            }
+
+            db = client.db(req.session.companyId);
+            collections.appointments = db.collection('appointments');
+            collections.clients = db.collection('clients');
+            collections.employees = db.collection('employees');
+            collections.waitlist = db.collection('waitlist');
 
             // Sets appointments array.
             collections.appointments.find().sort({
@@ -559,11 +628,20 @@ app.get('/insights', (req, res) => {
                                 first.clientContact = req.session.clients[0].clientContact;
                             }
 
-                            res.render('pages/insights', {
-                                companyName: req.session.data,
-                                modalEmployees: modalEmployeeTemplate(req.session.employees),
-                                modalClients: modalClientTemplate(req.session.clients),
-                                firstClient: first,
+                            let clientProfile;
+
+                            req.session.clients.forEach(client => {
+                                if (client._id == req.params.clientId) {
+                                    clientProfile = client;
+        
+                                    res.render('pages/individuals/client', {
+                                        client: clientProfile,
+                                        companyName: req.session.data,
+                                        modalEmployees: modalEmployeeTemplate(req.session.employees),
+                                        modalClients: modalClientTemplate(req.session.clients),
+                                        firstClient: first
+                                    });
+                                }
                             });
                         }).catch(error => console.log(error));
                     }).catch(error => console.log(error));
@@ -575,21 +653,6 @@ app.get('/insights', (req, res) => {
             message: `<div class="alert alert-warning alert-small" role="alert">Login required.</div>`
         });
     }
-});
-
-// Access client profile.
-app.get('/clients/:clientId', (req, res) => {
-    let clientProfile;
-
-    req.session.clients.forEach(client => {
-        if (client._id == req.params.clientId) {
-            console.log(client);
-            clientProfile = client;
-            res.render('pages/individuals/client', {
-                client: clientProfile
-            });
-        }
-    });
 });
 
 // Access employee profile.
@@ -918,4 +981,57 @@ app.put('/toggleStatus', (req, res) => {
 
         res.json(`Status of ${appointmentId} toggled.`);
     }).catch(error => console.log(error));
+});
+
+// Retrieve chart data from database.
+app.put('/getChartData', (req, res) => {
+    let chartData = {
+        lineGraph: {
+            // labels
+            dates: [],
+            // data
+            revenue: []
+        },
+        pieGraph: {
+            // labels
+            categories: [],
+            // values
+            values: []
+        }
+    }
+
+    let categories = [];
+
+    req.session.appointments.forEach(appt => {
+        let date = new Date(`${appt.apptDatetime}`);
+        date = moment(date.toISOString());
+        date = date.format("MMM DD, YYYY @ h:mm a");
+
+        chartData.lineGraph.dates.push(date);
+        chartData.lineGraph.revenue.push(appt.apptPrice);
+
+        let exists = false;
+
+        for (let x = 0; x < categories.length; x++) {
+            if (appt.apptType == categories[x].name) {
+                exists = true;
+                categories[x].count++;
+            }
+        }
+
+        if (!exists) {
+            let obj = {
+                name: appt.apptType,
+                count: 1
+            }
+            categories.push(obj);
+        }
+    });
+
+    categories.forEach(cat => {
+        chartData.pieGraph.categories.push(cat.name);
+        chartData.pieGraph.values.push(cat.count);
+    });
+
+    res.json(chartData);
 });

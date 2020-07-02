@@ -11,6 +11,9 @@
     <!-- Google Fonts CDN -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"
+        integrity="sha256-8zyeSXm+yTvzUN1VgAOinFgaVFEFTyYzWShOy9w7WoQ=" crossorigin="anonymous"></script>
+
     <!-- CSS stylesheets -->
     <link rel="stylesheet" href="css/root.css">
     <link rel="stylesheet" href="css/main.css">
@@ -64,25 +67,53 @@
     <div id="main-container">
         <div id="insights">
             <div class="dashboard">
-                <h1>Insights</h1>
+                <h1>Total Insights</h1>
             </div>
             <div id="upper-insights">
                 <div class="dashboard">
-                    <h1>Revenue</h1>
-                    <p>$9999</p>
+                    <div class="dashboard-image">
+                        <img class="image-revenue" src="images/revenue.png">
+                    </div>
+                    <div class="dashboard-content">
+                        <h1>Revenue</h1>
+                        <p>$<%=insights.revenue%></p>
+                    </div>
                 </div>
                 <div class="dashboard">
-                    <h1>Bookings</h1>
-                    <p>99 bookings</p>
+                    <div class="dashboard-image">
+                        <img src="images/bookings.png">
+                    </div>
+                    <div class="dashboard-content">
+                        <h1>Bookings</h1>
+                        <p><%=insights.bookings%> <%= insights.bookings == 1 ? 'booking' : 'bookings' %></p>
+                    </div>
                 </div>
                 <div class="dashboard">
-                    <h1>Clients</h1>
-                    <p>99 new clients</p>
+                    <div class="dashboard-image">
+                        <img src="images/clients.png">
+                    </div>
+                    <div class="dashboard-content">
+                        <h1>Clients</h1>
+                        <p><%=insights.clients%> <%= insights.clients == 1 ? 'client' : 'clients' %></p>
+                    </div>
                 </div>
             </div>
-            <div id="lower-insights">
-                <div class="dashboard">
-
+            <div id="insights-graphs" class="row">
+                <div class="col-2">
+                  <div class="list-group dashboard" id="list-tab" role="tablist">
+                    <a class="list-group-item list-group-item-action active" id="insights-line-list" data-toggle="list" href="#insights-line" role="tab" aria-controls="revenue">Revenue</a>
+                    <a class="list-group-item list-group-item-action" id="insights-pie-list" data-toggle="list" href="#insights-pie" role="tab" aria-controls="categories">Categories</a>
+                  </div>
+                </div>
+                <div class="col-10">
+                  <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="insights-line" role="tabpanel" aria-labelledby="insights-line-list">
+                        <canvas class="dashboard" id="insights-chart-line" width="800" height="450"></canvas>
+                    </div>
+                    <div class="tab-pane fade" id="insights-pie" role="tabpanel" aria-labelledby="insights-pie-list">
+                        <canvas class="dashboard" id="insights-chart-pie" width="800" height="450"></canvas>
+                    </div>
+                  </div>
                 </div>
             </div>
         </div>
@@ -292,6 +323,7 @@
     <script src="scripts/addEntity.js"></script>
     <script src="scripts/deleteEntity.js"></script>
     <script src="scripts/toggleStatus.js"></script>
+    <script src="scripts/loadChart.js"></script>
 
     <script>
         $(function () {
