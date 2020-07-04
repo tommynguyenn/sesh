@@ -633,10 +633,15 @@ app.get('/clients/:clientId', (req, res) => {
                             req.session.clients.forEach(client => {
                                 if (client._id == req.params.clientId) {
                                     clientProfile = client;
-        
+
+                                    let arr = req.session.appointments.filter(appt => {
+                                        return String(appt.clientId) == String(clientProfile._id);
+                                    });
+
                                     res.render('pages/individuals/client', {
                                         client: clientProfile,
                                         companyName: req.session.data,
+                                        clientAppointments: appointmentTemplate(arr, req.session),
                                         modalEmployees: modalEmployeeTemplate(req.session.employees),
                                         modalClients: modalClientTemplate(req.session.clients),
                                         firstClient: first
@@ -657,17 +662,80 @@ app.get('/clients/:clientId', (req, res) => {
 
 // Access employee profile.
 app.get('/employees/:employeeId', (req, res) => {
-    let employeeProfile;
+    if (req.session.logged) {
+        MongoClient.connect(connectionString, {
+            useUnifiedTopology: true
+        }).then(client => {
+            let db;
+            let collections = {
+                appointments: null,
+                clients: null,
+                employees: null,
+                waitlist: null
+            }
 
-    req.session.employees.forEach(employee => {
-        if (employee._id == req.params.employeeId) {
-            console.log(employee);
-            employeeProfile = employee;
-            res.render('pages/individuals/employee', {
-                employee: employeeProfile
-            });
-        }
-    });
+            db = client.db(req.session.companyId);
+            collections.appointments = db.collection('appointments');
+            collections.clients = db.collection('clients');
+            collections.employees = db.collection('employees');
+            collections.waitlist = db.collection('waitlist');
+
+            // Sets appointments array.
+            collections.appointments.find().sort({
+                apptDatetime: 1
+            }).toArray().then(appArr => {
+                req.session.appointments = appArr;
+            }).then(result => {
+                // Sets clients array.
+                collections.clients.find().toArray().then(cliArr => {
+                    req.session.clients = cliArr;
+                }).then(result => {
+                    // Sets employees array.
+                    collections.employees.find().toArray().then(empArr => {
+                        req.session.employees = empArr;
+                    }).then(result => {
+                        // Sets waitlist array.
+                        collections.waitlist.find().toArray().then(waitlistArr => {
+                            req.session.waitlist = waitlistArr;
+                        }).then(result => {
+                            let first = {
+                                clientContact: ' '
+                            }
+
+                            if (req.session.clients[0] != undefined) {
+                                first.clientContact = req.session.clients[0].clientContact;
+                            }
+
+                            let employeeProfile;
+
+                            req.session.employees.forEach(employee => {
+                                if (employee._id == req.params.employeeId) {
+                                    employeeProfile = employee;
+
+                                    let arr = req.session.appointments.filter(appt => {
+                                        return String(appt.employeeId) == String(employeeProfile._id);
+                                    });
+
+                                    res.render('pages/individuals/employee', {
+                                        employee: employeeProfile,
+                                        companyName: req.session.data,
+                                        empAppointments: appointmentTemplate(arr, req.session),
+                                        modalEmployees: modalEmployeeTemplate(req.session.employees),
+                                        modalClients: modalClientTemplate(req.session.clients),
+                                        firstClient: first
+                                    });
+                                }
+                            });
+                        }).catch(error => console.log(error));
+                    }).catch(error => console.log(error));
+                }).catch(error => console.log(error));
+            }).catch(error => console.log(error));
+        }).catch(error => console.log(error));
+    } else {
+        res.render('pages/login', {
+            message: `<div class="alert alert-warning alert-small" role="alert">Login required.</div>`
+        });
+    }
 });
 
 // Access appointment page.

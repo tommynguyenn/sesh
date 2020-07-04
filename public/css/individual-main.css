@@ -1,6 +1,6 @@
 #main-container {
     display: grid;
-    grid-template-columns: 35% 64.25%;
+    grid-template-columns: 25% 74.25%;
     grid-row: repeat(2, 50%);
     height: 92%;
 }
@@ -12,4 +12,9 @@
 .dashboard.client-appointments {
     grid-area: 1 / 2 / span 2 / span 1;
     height: 97%;
+}
+
+.dashboard-content > h1 {
+    font-size: 16px;
+    font-weight: bold;
 }

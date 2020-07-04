@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>sesh | employee [<%=employee.empName%>]</title>
+  <title>sesh | employees [<%=employee.empName%>]</title>
 
   <!-- Bootstrap CDN -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -62,31 +62,50 @@
   <!-- Main container for content. -->
   <div id="main-container">
     <div class="dashboard">
-        <div class="dashboard-title">
-            <h1>Employee Profile</h1>
-        </div>
-        <div class="dashboard-content">
-            <p><%=employee._id%></p>
-            <p><%=employee.empName%></p>
-            <p><%=employee.empContact%></p>
-            <p><%=employee.empAppointments%></p>
-        </div>
+      <div class="dashboard-title">
+        <h1>Employee Profile</h1>
+      </div>
+      <div class="dashboard-content">
+        <h1>Entity ID</h1>
+        <p><%=employee._id%></p>
+        <h1>Name</h1>
+        <p><%=employee.empName%></p>
+        <h1>Cellphone</h1>
+        <p><%=employee.empContact%></p>
+        <h1>Position</h1>
+        <p><%=employee.empPosition%></p>
+      </div>
     </div>
     <div class="dashboard client-appointments">
-        <div class="dashboard-title">
-            <h1><%=employee.empName%>'s Appointments</h1>
-        </div>
-        <div class="dashboard-content">
-            <p>table here</p>
-        </div>
+      <div class="dashboard-title">
+        <h1>Employee's Appointments</h1>
+      </div>
+      <div class="dashboard-content">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Status</th>
+              <th scope="col">Client</th>
+              <th scope="col">Employee</th>
+              <th scope="col">Date & Time</th>
+              <th scope="col">Price</th>
+              <th scope="col">Type</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%-empAppointments%>
+          </tbody>
+        </table>
+      </div>
     </div>
     <div class="dashboard">
-        <div class="dashboard-title">
-            <h1><%=employee.empName%>'s Insights</h1>
-        </div>
-        <div class="dashboard-content">
-            <p>insights here</p>
-        </div>
+      <div class="dashboard-title">
+        <h1>Employee's Insights</h1>
+      </div>
+      <div class="dashboard-content">
+        <p>insights here</p>
+      </div>
     </div>
   </div>
 
@@ -117,7 +136,8 @@
             </div>
             <div class="form-group">
               <label for="addAppointment-clientidentifier">Client's Contact</label>
-              <input type="text" class="form-control" id="addAppointment-clientidentifier" value="<%=firstClient.clientContact%>" disabled>
+              <input type="text" class="form-control" id="addAppointment-clientidentifier"
+                value="<%=firstClient.clientContact%>" disabled>
             </div>
             <div class="form-group">
               <label for="addAppointment-datetime">Date & Time</label>
@@ -161,7 +181,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div id="client-form"  class="modal-body">
+        <div id="client-form" class="modal-body">
           <!-- Add client form -->
           <form>
             <div class="form-group">
@@ -201,7 +221,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div id="employee-form"  class="modal-body">
+        <div id="employee-form" class="modal-body">
           <!-- Add employee form -->
           <form>
             <div class="form-group">
@@ -246,7 +266,8 @@
             </div>
             <div class="form-group">
               <label for="addWaitlist-clientidentifier">Client's Contact</label>
-              <input type="text" class="form-control" id="addWaitlist-clientidentifier" value="<%=firstClient.clientContact%>" disabled>
+              <input type="text" class="form-control" id="addWaitlist-clientidentifier"
+                value="<%=firstClient.clientContact%>" disabled>
             </div>
             <div class="form-group">
               <label for="addWaitlist-price">Price</label>

@@ -37,3 +37,7 @@
 .app-title {
     text-align: center;
 }
+
+#sidebar > a.active {
+    color: var(--nav-color);
+}
