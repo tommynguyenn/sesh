@@ -1,0 +1,323 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sesh | clients [<%=client.clientName%>]</title>
+
+  <!-- Bootstrap CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <!-- Google Fonts CDN -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+  <!-- CSS stylesheets -->
+  <link rel="stylesheet" href="../css/root.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/topbar.css">
+  <link rel="stylesheet" href="../css/sidebar.css">
+  <link rel="stylesheet" href="../css/individual-main.css">
+</head>
+
+<body>
+  <!-- Fixed brand bar. -->
+  <nav class="navbar fixed-top">
+    <button id="sidebar-toggler" class="topbar-btn hover">&#9776;</button>
+    <div class="navbar-links">
+      <a href="/insights">Insights</a>
+      <div class="dropdown">
+        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          Add
+        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#appointmentModal">Appointment</a>
+          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#clientModal">Client</a>
+          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#employeeModal">Employee</a>
+          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#waitlistModal">Waitlist</a>
+        </div>
+      </div>
+      <div class="vl"></div>
+      <a id="navbar-brand">sesh</a>
+    </div>
+  </nav>
+
+  <!-- Collapsible dashboard sidebar. -->
+  <div id="sidebar">
+    <p class="app-title"><%= companyName %></p>
+    <p class="sidebar-title">MENU</p>
+    <a href="/dashboard">Dashboard</a>
+    <hr>
+    <p class="sidebar-title">COMPANY</p>
+    <a href="/appointments">Appointments</a>
+    <a href="/clients">Clients</a>
+    <a href="/employees">Employees</a>
+    <hr>
+    <p class="sidebar-title">ACCOUNT</p>
+    <a href="/settings">Settings</a>
+    <a href="/logout">Logout</a>
+  </div>
+
+  <!-- Main container for content. -->
+  <div id="main-container">
+    <div class="dashboard">
+      <div class="dashboard-title">
+        <h1>Client Profile</h1>
+      </div>
+      <div class="dashboard-content">
+        <h1>Entity ID</h1>
+        <p><%=client._id%></p>
+        <h1>Name</h1>
+        <p><%=client.clientName%></p>
+        <h1>Cellphone</h1>
+        <p><%=client.clientContact%></p>
+      </div>
+    </div>
+    <div class="dashboard client-appointments">
+      <div class="dashboard-title">
+        <h1>Client's Appointments</h1>
+      </div>
+      <div class="dashboard-content">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Status</th>
+              <th scope="col">Client</th>
+              <th scope="col">Employee</th>
+              <th scope="col">Date & Time</th>
+              <th scope="col">Price</th>
+              <th scope="col">Type</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%-clientAppointments%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="dashboard">
+      <div class="dashboard-title">
+        <h1>Client's Insights</h1>
+      </div>
+      <div class="dashboard-content">
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Appointment modal -->
+  <div class="modal fade" id="appointmentModal" tabindex="-1" role="dialog" aria-labelledby="appointmentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="appointmentModalLabel">Add appointment</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="appointment-form" class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="addAppointment-employee">Employee</label>
+              <select class="form-control" id="addAppointment-employee">
+                <%- modalEmployees %>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="addAppointment-client">Client</label>
+              <select class="form-control" id="addAppointment-client">
+                <%- modalClients %>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="addAppointment-clientidentifier">Client's Contact</label>
+              <input type="text" class="form-control" id="addAppointment-clientidentifier"
+                value="<%=firstClient.clientContact%>" disabled>
+            </div>
+            <div class="form-group">
+              <label for="addAppointment-datetime">Date & Time</label>
+              <input type="datetime-local" class="form-control" id="addAppointment-datetime">
+            </div>
+            <div class="form-group">
+              <label for="addAppointment-price">Price</label>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">$</span>
+                </div>
+                <input type="number" id="addAppointment-price" class="form-control" value="0.00">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="addAppointment-type">Type</label>
+              <!-- Maybe this can be a select field -->
+              <input type="text" class="form-control" id="addAppointment-type">
+            </div>
+            <div class="form-group">
+              <label for="addAppointment-notes">Notes</label>
+              <textarea class="form-control" id="addAppointment-notes" rows="2"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="addAppointment" class="add-btn">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client modal -->
+  <div class="modal fade" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="appointmentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="appointmentModalLabel">Add client</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="client-form" class="modal-body">
+          <!-- Add client form -->
+          <form>
+            <div class="form-group">
+              <label for="addClient-name">Name</label>
+              <input type="text" class="form-control" id="addClient-name">
+            </div>
+            <div class="form-group">
+              <label for="addClient-contact">Contact (cell)</label>
+              <input type="text" class="form-control" id="addClient-contact">
+            </div>
+            <div class="form-group">
+              <label for="addClient-value">Lifetime Value</label>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">$</span>
+                </div>
+                <input type="number" id="addClient-value" class="form-control" value="0.00">
+              </div>
+            </div>
+          </form>
+          <div class="modal-footer">
+            <button id="addClient" class="add-btn">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Employee modal -->
+  <div class="modal fade" id="employeeModal" tabindex="-1" role="dialog" aria-labelledby="appointmentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="appointmentModalLabel">Add employee</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="employee-form" class="modal-body">
+          <!-- Add employee form -->
+          <form>
+            <div class="form-group">
+              <label for="addEmployee-name">Name</label>
+              <input type="text" class="form-control" id="addEmployee-name">
+            </div>
+            <div class="form-group">
+              <label for="addEmployee-contact">Contact (cell)</label>
+              <input type="text" class="form-control" id="addEmployee-contact">
+            </div>
+            <div class="form-group">
+              <label for="addEmployee-position">Position</label>
+              <input type="text" class="form-control" id="addEmployee-position">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="addEmployee" class="add-btn">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Waitlist modal -->
+  <div class="modal fade" id="waitlistModal" tabindex="-1" role="dialog" aria-labelledby="appointmentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="waitlistModalLabel">Add to waitlist</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="waitlist-form" class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="addWaitlist-client">Client</label>
+              <select class="form-control" id="addWaitlist-client">
+                <%- modalClients %>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="addWaitlist-clientidentifier">Client's Contact</label>
+              <input type="text" class="form-control" id="addWaitlist-clientidentifier"
+                value="<%=firstClient.clientContact%>" disabled>
+            </div>
+            <div class="form-group">
+              <label for="addWaitlist-price">Price</label>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">$</span>
+                </div>
+                <input type="number" id="addWaitlist-price" class="form-control" value="0.00">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="addWaitlist-type">Type</label>
+              <!-- Maybe this can be a select field -->
+              <input type="text" class="form-control" id="addWaitlist-type">
+            </div>
+            <div class="form-group">
+              <label for="addWaitlist-notes">Notes</label>
+              <textarea class="form-control" id="addWaitlist-notes" rows="2"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="addWaitlist" class="add-btn">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+  <!-- Popper.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+  </script>
+  <!-- Bootstrap.js CDN -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+  </script>
+
+  <!-- JS scripts -->
+  <script src="../scripts/sidebar.js"></script>
+  <script src="../scripts/addEntity.js"></script>
+  <script src="../scripts/deleteEntity.js"></script>
+  <script src="../scripts/toggleStatus.js"></script>
+
+  <script>
+    $(function () {
+      $('[data-toggle="popover"]').popover({
+        trigger: 'hover'
+      })
+    })
+  </script>
+</body>
+
+</html>

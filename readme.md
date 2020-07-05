@@ -1,11 +1,19 @@
 # sesh
-Appointment booking application built by Tommy Nguyen.
+Tommy Nguyen, 2020
 
-## Application Information
-sesh was built with:
-- vanilla javascript, jquery, node.js, express.js, express-sessions, moment, ejs, mongodb, bootstrap, html, css
+Hosted on https://seshapp.herokuapp.com/
 
-#### Hosted Link
-[-](https://github.com/tommynguyenn/sesh)
+## Project Information
+This project was built for small-scale, self-employed users in the beauty industry. 
 
-NOTES:
+Users can create and track appointments, waitlists, clients, and employees. They can also view their company's insights such as revenue and sales.
+
+## Technologies
+- MongoDB, ExpressJS, NodeJS
+- Express-Sessions, MomentJS, ChartJS
+- JQuery, EJS
+- Bootstrap
+
+## Scripts
+### 'npm start'
+This will run the command 'node server.js' and you will be able to access the application through localhost:3000.

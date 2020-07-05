@@ -1,0 +1,12 @@
+:root {
+    --main-color: #403d39;
+    --sec-color: #e2e2e2;
+    --sidebar-color: #ebebeb;
+    --nav-color: #02c39a;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--sec-color);
+    color: var(--main-color);
+}
