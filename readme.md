@@ -1,5 +1,6 @@
 # sesh
 Tommy Nguyen, 2020
+
 Hosted on (https://seshapp.herokuapp.com/)[https://seshapp.herokuapp.com/]
 
 ## Project Information
@@ -9,7 +10,7 @@ Users can create and track appointments, clients, and employees. They can also v
 
 ## Technologies
 - MongoDB, ExpressJS, NodeJS
-- Express-Sessions, MomentJS
+- Express-Sessions, MomentJS, ChartJS
 - JQuery, EJS
 - Bootstrap
 
