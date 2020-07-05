@@ -738,21 +738,6 @@ app.get('/employees/:employeeId', (req, res) => {
     }
 });
 
-// Access appointment page.
-app.get('/appointments/:appointmentId', (req, res) => {
-    let appointmentProfile;
-
-    req.session.appointments.forEach(appointment => {
-        if (appointment._id == req.params.appointmentId) {
-            console.log(appointment);
-            appointmentProfile = appointment;
-            res.render('pages/individuals/appointment', {
-                appointment: appointmentProfile
-            });
-        }
-    });
-});
-
 // Add a client to the database.
 app.post('/addClient', (req, res) => {
     const newClient = {
