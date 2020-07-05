@@ -1,7 +1,7 @@
 # sesh
 Tommy Nguyen, 2020
 
-Hosted on (https://seshapp.herokuapp.com/)[https://seshapp.herokuapp.com/]
+Hosted on https://seshapp.herokuapp.com/
 
 ## Project Information
 This project was built for small-scale, self-employed users in the beauty industry. 
