@@ -27,7 +27,7 @@ app.use(express.static('public'));
 
 app.use(session({
     name: 'seshapp',
-    secret: 'sec',
+    secret: 'secret',
     // secret: process.env.SESSION_SECRET,
     secure: true,
     resave: false,
@@ -223,30 +223,61 @@ function modalEmployeeTemplate(employeeArr) {
  * Routes *
  **********/
 
-// Redirect basic URL to login.
+// Basic URL for landing page.
 app.get('/', (req, res) => {
-    res.render('pages/login', {
-        message: `<div class="alert alert-primary alert-small" role="alert">Welcome to sesh!</div>`
+    res.render('pages/landing');
+});
+
+// Route to signup page.
+app.get('/early-access', (req, res) => {
+    res.render('pages/signup', {
+        message: ''
     });
 });
 
-// Perform login authentication.
-app.get('/login', (req, res) => {
-    loginDb.find().toArray().then(loginArr => {
-        loginArr.forEach(login => {
-            if (login.username == req.query.username && login.password == req.query.password) {
-                // Sets company ID for later use.
-                req.session.companyId = login._id.toString();
-                // Sets logged in as true.
-                req.session.logged = true;
-                res.redirect('/dashboard');
-            } else {
-                res.render('pages/login', {
-                    message: `<div class="alert alert-danger alert-small" role="alert">Invalid login credentials</div>`
-                });
-            }
+// Post request to insert an inquiry.
+app.post('/inquiry', (req, res) => {
+    MongoClient.connect(connectionString, {
+        useUnifiedTopology: true
+    }).then(client => {
+        let inquiryDb = client.db('sesh').collection('inquiries');
+        console.log(`Connected to mongoDB [sesh.inquiries] database.`);
+
+        inquiryDb.insertOne({
+            name: req.body.inquiryName,
+            email: req.body.inquiryEmail,
+            message: req.body.inquiryMessage
         });
-    })
+
+        res.render('pages/signup', {
+            message: `<div class="alert alert-primary alert-small" role="alert">Inquiry sent!</div>`
+        });
+    }).catch(error => console.log(error));
+});
+
+// Login authentication.
+app.get('/login', (req, res) => {
+    if (!req.query.username && !req.query.password) {
+        res.render('pages/login', {
+            message: `<div class="alert alert-primary alert-small" role="alert">Welcome to sesh!</div>`
+        });
+    } else {
+        loginDb.find().toArray().then(loginArr => {
+            loginArr.forEach(login => {
+                if (login.username == req.query.username && login.password == req.query.password) {
+                    // Sets company ID for later use.
+                    req.session.companyId = login._id.toString();
+                    // Sets logged in as true.
+                    req.session.logged = true;
+                    res.redirect('/dashboard');
+                } else {
+                    res.render('pages/login', {
+                        message: `<div class="alert alert-danger alert-small" role="alert">Invalid login credentials</div>`
+                    });
+                }
+            });
+        })
+    }
 });
 
 // Log out and destroy session.
