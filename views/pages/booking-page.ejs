@@ -1,0 +1,67 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%=company.name%> by sesh</title>
+
+    <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!-- Google Fonts CDN -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+    <!-- CSS stylesheets -->
+    <link rel="stylesheet" href="css/root.css">
+    <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="css/booking-page.css">
+</head>
+
+<body>
+    <!-- Main container for content. -->
+    <div id="main-container">
+        <!-- Fixed brand bar. -->
+        <nav>
+            <a class="navbar-brand" href="/<%=company.id%>">
+                <div>
+                    <%=company.name%> 
+                </div>
+            </a>
+            <div>
+                <p class="navbar-brand-sesh">powered by <span>sesh</span>app</p>
+            </div>
+        </nav>
+        <div class="mc-services">
+            <div id="mc-services-text">
+                <h1 class="mc-headers">Services</h1>
+                <p class="mc-text">--</p>
+            </div>
+        </div>
+        <div class="mc-services">
+            <div id="mc-services-text">
+                <h1 class="mc-headers">Appointment Information</h1>
+                <p class="mc-text">--</p>
+            </div>
+        </div>
+    </div>
+    <div class="mc-footer">
+        <p>© 2020 All rights reserved.</p>
+    </div>
+
+    <!-- JQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <!-- Popper.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+    </script>
+    <!-- Bootstrap.js CDN -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
+    </script>
+
+    <!-- JS scripts -->
+    <script src="scripts/landing.js"></script>
+</body>
+
+</html>

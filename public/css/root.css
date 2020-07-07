@@ -1,12 +1,15 @@
 :root {
     --main-color: #403d39;
     --sec-color: #e2e2e2;
-    --sidebar-color: #ebebeb;
+    --sidebar-color: #f3f3f3;
+    --loginbg-color: #f8f8f8;
+    --logindash-color: #f3f3f3;
+    --mainbg-color: #d3d3d373;
     --nav-color: #02c39a;
 }
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: var(--sec-color);
+    background-color: var(--mainbg-color);
     color: var(--main-color);
 }

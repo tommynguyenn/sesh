@@ -1,7 +1,7 @@
 #main-container {
     display: grid;
-    grid-template-columns: 25% 74.25%;
-    grid-row: repeat(2, 50%);
+    grid-template-columns: repeat(4, 24.5%);
+    grid-template-rows: repeat(8, 11.5%);
     height: 92%;
 }
 
@@ -9,9 +9,21 @@
     height: 100%;
 }
 
-.dashboard.client-appointments {
-    grid-area: 1 / 2 / span 2 / span 1;
+#appointments {
+    grid-area: 4 / 2 / span 5 / span 3;
     height: 97%;
+}
+
+#upcoming {
+    grid-area: 1 / 2 / span 3 / span 3;
+}
+
+#profile {
+    grid-area: 1 / 1 / span 4 / span 1;
+}
+
+#insights {
+    grid-area: 5 / 1 / span 4 / span 1;
 }
 
 .dashboard-content > h1 {
@@ -20,5 +32,5 @@
 }
 
 .dashboard-content {
-    height: 95%;
+    height: 88%;
 }

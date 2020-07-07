@@ -52,6 +52,7 @@
     <a href="/appointments">Appointments</a>
     <a href="/clients">Clients</a>
     <a href="/employees">Employees</a>
+    <a href="/waitlist">Waitlist</a>
     <hr>
     <p class="sidebar-title">ACCOUNT</p>
     <a href="/settings">Settings</a>
@@ -60,7 +61,7 @@
 
   <!-- Main container for content. -->
   <div id="main-container">
-    <div class="dashboard">
+    <div id="profile" class="dashboard">
       <div class="dashboard-title">
         <h1>Client Profile</h1>
       </div>
@@ -73,7 +74,30 @@
         <p><%=client.clientContact%></p>
       </div>
     </div>
-    <div class="dashboard client-appointments">
+    <div id="upcoming" class="dashboard">
+      <div class="dashboard-title">
+        <h1>Upcoming Appointments</h1>
+      </div>
+      <div class="dashboard-content">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Status</th>
+              <th scope="col">Client</th>
+              <th scope="col">Employee</th>
+              <th scope="col">Date & Time</th>
+              <th scope="col">Price</th>
+              <th scope="col">Type</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%-clientUpcoming%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="appointments" class="dashboard client-appointments">
       <div class="dashboard-title">
         <h1>Client's Appointments</h1>
       </div>
@@ -96,7 +120,7 @@
         </table>
       </div>
     </div>
-    <div class="dashboard">
+    <div id="insights" class="dashboard">
       <div class="dashboard-title">
         <h1>Client's Insights</h1>
       </div>
