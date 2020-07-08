@@ -345,13 +345,23 @@ app.get('/dashboard', (req, res) => {
                                         first.clientContact = req.session.clients[0].clientContact;
                                     }
 
+                                    let upcomingArr = req.session.appointments.filter(appt => {
+                                        let today = moment();
+                                        let nextWeek = moment().day(7)
+
+                                        let date = new Date(`${appt.apptDatetime}`);
+
+                                        return moment(date.toISOString()).isBetween(today, nextWeek);
+                                    });
+
                                     res.render('pages/dashboard', {
                                         companyName: req.session.data,
-                                        appointments: appointmentTemplate(req.session.appointments, req.session),
+                                        appointments: appointmentTemplate(upcomingArr, req.session),
                                         clients: clientTemplate(req.session.clients),
                                         employees: employeeTemplate(req.session.employees),
                                         waitlist: waitlistTemplate(req.session.waitlist, req.session),
-                                        count: [req.session.appointments.length,
+                                        count: [
+                                            upcomingArr.length,
                                             req.session.clients.length,
                                             req.session.employees.length,
                                             req.session.waitlist.length
