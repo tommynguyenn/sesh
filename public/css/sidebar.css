@@ -15,6 +15,7 @@
 }
 
 #sidebar > a, #sidebar > .sidebar-title {
+    margin-top: 5px;
     padding: 8px 8px 8px 32px;
     text-decoration: none;
     color: var(--main-color);
@@ -25,16 +26,18 @@
 
 #sidebar > a:hover {
     transform: scale(1.05);
+    background-color: rgba(228, 228, 228, 0.733);
 }
 
 #sidebar > .sidebar-title {
-    color: grey;
+    color: #666666;
     font-size: 13px;
     margin-bottom: -10px;
 }
 
 .app-title {
     text-align: center;
+    color:var(--nav-color);
 }
 
 #sidebar > a.active {

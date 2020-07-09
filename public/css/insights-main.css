@@ -25,9 +25,15 @@
     transform: scale(1.01);
 }
 
+.dashboard-content > p {
+    font-size: 1.7vw;
+    margin-top: -2.5px;
+    margin-bottom: -8px;
+}
+
 .dashboard-content > h1 {
-    font-size: 1.25vw;
-    margin-top: 7.5px;
+    font-size: 1vw;
+    color: #666666;
 }
 
 .dashboard {

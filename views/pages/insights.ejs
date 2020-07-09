@@ -42,13 +42,13 @@
                 </div>
             </div>
             <div class="vl"></div>
-            <a id="navbar-brand">sesh</a>
+            <a id="navbar-brand"><%= companyName %></a>
         </div>
     </nav>
 
     <!-- Collapsible dashboard sidebar. -->
     <div id="sidebar">
-        <p class="app-title"><%= companyName %></p>
+        <p class="app-title">sesh</p>
         <p class="sidebar-title">MENU</p>
         <a href="/dashboard">Dashboard</a>
         <hr>
@@ -75,8 +75,8 @@
                         <img class="image-revenue" src="images/revenue.png">
                     </div>
                     <div class="dashboard-content">
-                        <h1>Revenue</h1>
                         <p>$<%=insights.revenue%></p>
+                        <h1>in revenue</h1>
                     </div>
                 </div>
                 <div class="dashboard">
@@ -84,8 +84,8 @@
                         <img src="images/bookings.png">
                     </div>
                     <div class="dashboard-content">
-                        <h1>Bookings</h1>
-                        <p><%=insights.bookings%> <%= insights.bookings == 1 ? 'booking' : 'bookings' %></p>
+                        <p><%=insights.bookings%></p>
+                        <h1><%= insights.bookings == 1 ? 'booking' : 'bookings' %></h1>
                     </div>
                 </div>
                 <div class="dashboard">
@@ -93,8 +93,8 @@
                         <img src="images/clients.png">
                     </div>
                     <div class="dashboard-content">
-                        <h1>Clients</h1>
-                        <p><%=insights.clients%> <%= insights.clients == 1 ? 'client' : 'clients' %></p>
+                        <p><%=insights.clients%></p>
+                        <h1><%= insights.clients == 1 ? 'client' : 'clients' %></h1>
                     </div>
                 </div>
             </div>
@@ -105,7 +105,7 @@
                     <a class="list-group-item list-group-item-action" id="insights-pie-list" data-toggle="list" href="#insights-pie" role="tab" aria-controls="categories">Categories</a>
                   </div>
                 </div>
-                <div class="col-10">
+                <div id="graph-div" class="col-10">
                   <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="insights-line" role="tabpanel" aria-labelledby="insights-line-list">
                         <canvas class="dashboard" id="insights-chart-line" width="800" height="450"></canvas>
@@ -330,7 +330,7 @@
             $('[data-toggle="popover"]').popover({
                 trigger: 'hover'
             })
-        })
+        })        
     </script>
 </body>
 
