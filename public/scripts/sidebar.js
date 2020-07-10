@@ -21,7 +21,8 @@ function toggleDashboard() {
         $('#main-container').css('margin-left', '20px');
         $('#graph-div').removeClass('col-10');
         $('#graph-div').addClass('col-8');
-        if (width <= 500) {
+        console.log(width)
+        if (width <= 600) {
             $('#main-container').css('opacity', '100%');
             $('.navbar-links').css('opacity', '100%');
         }
@@ -32,6 +33,8 @@ function toggleDashboard() {
 // Set onclick functions.
 $('#sidebar-toggler').click(toggleDashboard);
 
-if (window.innerWidth <= 500) {
-    toggleDashboard();
-}
+$(e => {
+    if (window.innerWidth <= 500) {
+        toggleDashboard();
+    }
+});

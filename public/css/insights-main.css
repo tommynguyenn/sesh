@@ -74,3 +74,42 @@
 .list-group-item.list-group-item-action:hover {
     transform: scale(1.05);
 }
+
+#graphs-warning {
+    display: none;
+}
+
+@media only screen and (max-width: 450px) {
+    .dashboard > h1  {
+        font-size: 17px;
+    }
+    
+    .dashboard-content {
+        margin: auto;
+    }
+
+    .dashboard-content > h1 {
+        font-size: 15px;
+    }
+
+    .dashboard-content > p {
+        font-size: 18px;
+    }
+
+    .dashboard-image  {
+        display: none;
+    }
+
+    #insights-graphs {
+        display: none;
+    }
+
+    #graphs-warning {
+        margin-top: 20px;
+        display: block;
+    }
+
+    #graphs-warning > h1 {
+        font-size: 15px;
+    }    
+}

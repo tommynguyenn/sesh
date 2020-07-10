@@ -25,7 +25,7 @@ app.use(express.static('public'));
 
 app.use(session({
     name: 'seshapp',
-    secret: 'secret',
+    secret: process.env.SESSION_SECRET,
     secure: true,
     resave: false,
     saveUninitialized: false
