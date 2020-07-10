@@ -86,6 +86,7 @@
     
     .dashboard-content {
         margin: auto;
+        height: fit-content;
     }
 
     .dashboard-content > h1 {
@@ -105,11 +106,16 @@
     }
 
     #graphs-warning {
-        margin-top: 20px;
+        margin-top: 60px;
+        height: fit-content;
         display: block;
     }
 
     #graphs-warning > h1 {
         font-size: 15px;
     }    
+
+    #main-container {
+        height: 60%;
+    }
 }
