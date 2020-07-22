@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: repeat(4, 24.5%);
     grid-template-rows: repeat(8, 11.5%);
-    height: 92%;
+    height: 91.5%;
 }
 
 #main-container > .dashboard {
@@ -19,11 +19,7 @@
 }
 
 #profile {
-    grid-area: 1 / 1 / span 4 / span 1;
-}
-
-#insights {
-    grid-area: 5 / 1 / span 4 / span 1;
+    grid-area: 1 / 1 / span 8 / span 1;
 }
 
 .dashboard-content > h1 {
