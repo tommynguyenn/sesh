@@ -1,0 +1,27 @@
+.mc-footer {
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+}
+
+.navbar-brand {
+    margin-top: -7.5px;
+}
+
+.navbar-brand-sesh {
+    color: grey;
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+
+p > span {
+    color: var(--nav-color);
+}
+
+.mc-services {
+    margin-top: 2.5%;
+}
+
+h1.mc-headers {
+    font-size: 20px;
+}

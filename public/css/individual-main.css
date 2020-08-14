@@ -1,17 +1,25 @@
 #main-container {
     display: grid;
-    grid-template-columns: 25% 74.25%;
-    grid-row: repeat(2, 50%);
-    height: 92%;
+    grid-template-columns: repeat(4, 24.5%);
+    grid-template-rows: repeat(8, 11.5%);
+    height: 91.5%;
 }
 
 #main-container > .dashboard {
     height: 100%;
 }
 
-.dashboard.client-appointments {
-    grid-area: 1 / 2 / span 2 / span 1;
+#appointments {
+    grid-area: 4 / 2 / span 5 / span 3;
     height: 97%;
+}
+
+#upcoming {
+    grid-area: 1 / 2 / span 3 / span 3;
+}
+
+#profile {
+    grid-area: 1 / 1 / span 8 / span 1;
 }
 
 .dashboard-content > h1 {
@@ -20,5 +28,32 @@
 }
 
 .dashboard-content {
-    height: 95%;
+    height: 88%;
+}
+
+@media only screen and (max-width: 450px) {
+    #main-container {
+        display: grid;
+        grid-template-columns: 100%;
+        grid-template-rows: repeat(4, 40%);
+        grid-gap: 20px;
+        height: 92%;
+    }
+
+    #profile {
+        grid-area: 1 / 1;
+    }
+    
+    #upcoming {
+        grid-area: 2 / 1;
+    }
+    
+    #appointments {
+        grid-area: 3 / 1;
+    }
+    
+    #insights {
+        grid-area: 4 / 1;
+        margin-bottom: 20px;
+    }
 }

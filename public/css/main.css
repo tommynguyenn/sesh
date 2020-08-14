@@ -23,7 +23,7 @@
 }
 
 .dashboard-title > h1 {
-    font-size: 22px;
+    font-size: 19px;
     margin-top: 5px;
     margin-bottom: 12.5px;
 }
@@ -76,7 +76,7 @@
     margin-top: -2.5px;
     margin-bottom: -2.5px;
     margin-right: 5px;
-    font-size: 20px;
+    font-size: 19px;
     color: var(--main-color);
     padding: 1px 5px;
     transition: 0.25s;
@@ -90,4 +90,57 @@
     background-color: var(--nav-color);
     color: var(--sidebar-color);
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+.table td, .table th {
+    padding: .65em;
+    white-space: nowrap;
+}
+
+@media only screen and (max-width: 450px) {
+    #main-container {
+        margin: 60px 20px 0px 270px;
+        padding: 0px;
+        display: grid;
+        grid-template-columns: 100%;
+        grid-template-rows: repeat(2, 50%);
+        grid-gap: 0px;
+        transition: 0.5s;
+    }
+
+    .dashboard-title > h1 {
+        font-size: 17px;
+    }
+
+    #pills-clients-tab.nav-link, #pills-employees-tab.nav-link {    
+        font-size: 17px;
+    }
+
+    .btm-dashboard {
+        margin-top: -100px;
+        display: block;
+    }
+
+    .btm-dashboard > .dashboard {
+        margin-bottom: 22.5px;
+    }
+
+    .table td, .table th {
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .form-group > label {
+        margin-bottom: -2.5px;
+    }
+
+    .add-btn {
+        margin-top: -7px;
+        margin-bottom: -5px;
+    }
+
+    form {
+        height: 75%;
+        overflow: scroll;
+    }
 }

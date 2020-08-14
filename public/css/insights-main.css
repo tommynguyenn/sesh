@@ -25,8 +25,15 @@
     transform: scale(1.01);
 }
 
+.dashboard-content > p {
+    font-size: 1.7vw;
+    margin-top: -2.5px;
+    margin-bottom: -8px;
+}
+
 .dashboard-content > h1 {
-    font-size: 1.25vw;
+    font-size: 1vw;
+    color: #666666;
 }
 
 .dashboard {
@@ -66,4 +73,49 @@
 
 .list-group-item.list-group-item-action:hover {
     transform: scale(1.05);
+}
+
+#graphs-warning {
+    display: none;
+}
+
+@media only screen and (max-width: 450px) {
+    .dashboard > h1  {
+        font-size: 17px;
+    }
+    
+    .dashboard-content {
+        margin: auto;
+        height: fit-content;
+    }
+
+    .dashboard-content > h1 {
+        font-size: 15px;
+    }
+
+    .dashboard-content > p {
+        font-size: 18px;
+    }
+
+    .dashboard-image  {
+        display: none;
+    }
+
+    #insights-graphs {
+        display: none;
+    }
+
+    #graphs-warning {
+        margin-top: 60px;
+        height: fit-content;
+        display: block;
+    }
+
+    #graphs-warning > h1 {
+        font-size: 15px;
+    }    
+
+    #main-container {
+        height: 60%;
+    }
 }

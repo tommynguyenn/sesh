@@ -8,11 +8,9 @@ const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectID;
 const moment = require('moment');
 const session = require('express-session');
-const Chart = require('chart.js');
 
 /* Initialize application */
 const express = require('express');
-const e = require('express');
 const app = express();
 
 /***************
@@ -27,12 +25,13 @@ app.use(express.static('public'));
 
 app.use(session({
     name: 'seshapp',
-    secret: 'sec',
-    // secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET,
     secure: true,
     resave: false,
     saveUninitialized: false
 }));
+
+let loginDb;
 
 /********************
  * Backend/Database *
@@ -223,22 +222,57 @@ function modalEmployeeTemplate(employeeArr) {
  * Routes *
  **********/
 
-// Redirect basic URL to login.
+// Basic URL for landing page.
 app.get('/', (req, res) => {
-    res.render('pages/login', {
-        message: `<div class="alert alert-primary alert-small" role="alert">Welcome to sesh!</div>`
+    res.render('pages/landing');
+});
+
+// Route to signup page.
+app.get('/early-access', (req, res) => {
+    res.render('pages/signup', {
+        message: ''
     });
 });
 
-// Perform login authentication.
+// Post request to insert an inquiry.
+app.post('/inquiry', (req, res) => {
+    MongoClient.connect(connectionString, {
+        useUnifiedTopology: true
+    }).then(client => {
+        let inquiryDb = client.db('sesh').collection('inquiries');
+        console.log(`Connected to mongoDB [sesh.inquiries] database.`);
+
+        inquiryDb.insertOne({
+            name: req.body.inquiryName,
+            email: req.body.inquiryEmail,
+            message: req.body.inquiryMessage
+        });
+
+        res.render('pages/signup', {
+            message: `<div class="alert alert-primary alert-small" role="alert">Inquiry sent!</div>`
+        });
+    }).catch(error => console.log(error));
+});
+
+// Login authentication.
 app.get('/login', (req, res) => {
-    loginDb.find().toArray().then(loginArr => {
-        loginArr.forEach(login => {
-            if (login.username == req.query.username && login.password == req.query.password) {
-                // Sets company ID for later use.
-                req.session.companyId = login._id.toString();
-                // Sets logged in as true.
-                req.session.logged = true;
+    if (!req.query.username && !req.query.password) {
+        res.render('pages/login', {
+            message: `<div class="alert alert-primary alert-small" role="alert">Welcome to sesh!</div>`
+        });
+    } else {
+        loginDb.find().toArray().then(loginArr => {
+            for (let i = 0; i < loginArr.length; i++) {
+                if (loginArr[i].username == req.query.username && loginArr[i].password == req.query.password) {
+                    // Sets company ID for later use.
+                    req.session.companyId = loginArr[i]._id.toString();
+                    // Sets logged in as true.
+                    req.session.logged = true;
+                    break;
+                }
+            }
+        }).then(e => {
+            if (req.session.logged) {
                 res.redirect('/dashboard');
             } else {
                 res.render('pages/login', {
@@ -246,7 +280,7 @@ app.get('/login', (req, res) => {
                 });
             }
         });
-    })
+    }
 });
 
 // Log out and destroy session.
@@ -310,13 +344,23 @@ app.get('/dashboard', (req, res) => {
                                         first.clientContact = req.session.clients[0].clientContact;
                                     }
 
+                                    let upcomingArr = req.session.appointments.filter(appt => {
+                                        let today = moment();
+                                        let nextWeek = moment().day(7)
+
+                                        let date = new Date(`${appt.apptDatetime}`);
+
+                                        return moment(date.toISOString()).isBetween(today, nextWeek);
+                                    });
+
                                     res.render('pages/dashboard', {
                                         companyName: req.session.data,
-                                        appointments: appointmentTemplate(req.session.appointments, req.session),
+                                        appointments: appointmentTemplate(upcomingArr, req.session),
                                         clients: clientTemplate(req.session.clients),
                                         employees: employeeTemplate(req.session.employees),
                                         waitlist: waitlistTemplate(req.session.waitlist, req.session),
-                                        count: [req.session.appointments.length,
+                                        count: [
+                                            upcomingArr.length,
                                             req.session.clients.length,
                                             req.session.employees.length,
                                             req.session.waitlist.length
@@ -582,6 +626,72 @@ app.get('/insights', (req, res) => {
     }
 });
 
+// Load waitlist.
+app.get('/waitlist', (req, res) => {
+    if (req.session.logged) {
+        MongoClient.connect(connectionString, {
+            useUnifiedTopology: true
+        }).then(client => {
+            let db;
+            let collections = {
+                appointments: null,
+                clients: null,
+                employees: null,
+                waitlist: null
+            }
+
+            db = client.db(req.session.companyId);
+            collections.appointments = db.collection('appointments');
+            collections.clients = db.collection('clients');
+            collections.employees = db.collection('employees');
+            collections.waitlist = db.collection('waitlist');
+
+            // Sets appointments array.
+            collections.appointments.find().sort({
+                apptDatetime: 1
+            }).toArray().then(appArr => {
+                req.session.appointments = appArr;
+            }).then(result => {
+                // Sets clients array.
+                collections.clients.find().toArray().then(cliArr => {
+                    req.session.clients = cliArr;
+                }).then(result => {
+                    // Sets employees array.
+                    collections.employees.find().toArray().then(empArr => {
+                        req.session.employees = empArr;
+                    }).then(result => {
+                        // Sets waitlist array.
+                        collections.waitlist.find().toArray().then(waitlistArr => {
+                            req.session.waitlist = waitlistArr;
+                        }).then(result => {
+                            let first = {
+                                clientContact: ' '
+                            }
+
+                            if (req.session.clients[0] != undefined) {
+                                first.clientContact = req.session.clients[0].clientContact;
+                            }
+
+                            res.render('pages/waitlist', {
+                                companyName: req.session.data,
+                                waitlist: waitlistTemplate(req.session.waitlist, req.session),
+                                count: req.session.waitlist.length,
+                                modalEmployees: modalEmployeeTemplate(req.session.employees),
+                                modalClients: modalClientTemplate(req.session.clients),
+                                firstClient: first,
+                            });
+                        }).catch(error => console.log(error));
+                    }).catch(error => console.log(error));
+                }).catch(error => console.log(error));
+            }).catch(error => console.log(error));
+        }).catch(error => console.log(error));
+    } else {
+        res.render('pages/login', {
+            message: `<div class="alert alert-warning alert-small" role="alert">Login required.</div>`
+        });
+    }
+});
+
 // Access client profile.
 app.get('/clients/:clientId', (req, res) => {
     if (req.session.logged) {
@@ -638,10 +748,20 @@ app.get('/clients/:clientId', (req, res) => {
                                         return String(appt.clientId) == String(clientProfile._id);
                                     });
 
+                                    let upcomingArr = arr.filter(appt => {
+                                        let today = moment();
+                                        let nextWeek = moment().day(7)
+
+                                        let date = new Date(`${appt.apptDatetime}`);
+
+                                        return moment(date.toISOString()).isBetween(today, nextWeek);
+                                    });
+
                                     res.render('pages/individuals/client', {
                                         client: clientProfile,
                                         companyName: req.session.data,
                                         clientAppointments: appointmentTemplate(arr, req.session),
+                                        clientUpcoming: appointmentTemplate(upcomingArr, req.session),
                                         modalEmployees: modalEmployeeTemplate(req.session.employees),
                                         modalClients: modalClientTemplate(req.session.clients),
                                         firstClient: first
@@ -716,10 +836,20 @@ app.get('/employees/:employeeId', (req, res) => {
                                         return String(appt.employeeId) == String(employeeProfile._id);
                                     });
 
+                                    let upcomingArr = arr.filter(appt => {
+                                        let today = moment();
+                                        let nextWeek = moment().day(7)
+
+                                        let date = new Date(`${appt.apptDatetime}`);
+
+                                        return moment(date.toISOString()).isBetween(today, nextWeek);
+                                    });
+
                                     res.render('pages/individuals/employee', {
                                         employee: employeeProfile,
                                         companyName: req.session.data,
                                         empAppointments: appointmentTemplate(arr, req.session),
+                                        empUpcoming: appointmentTemplate(upcomingArr, req.session),
                                         modalEmployees: modalEmployeeTemplate(req.session.employees),
                                         modalClients: modalClientTemplate(req.session.clients),
                                         firstClient: first
@@ -736,6 +866,31 @@ app.get('/employees/:employeeId', (req, res) => {
             message: `<div class="alert alert-warning alert-small" role="alert">Login required.</div>`
         });
     }
+});
+
+// Access a company's booking page.
+app.get('/:companyId', (req, res) => {
+    let company = {
+        name: null,
+        id: req.params.companyId
+    }
+
+    loginDb.find().toArray().then(loginArr => {
+        for (let i = 0; i < loginArr.length; i++) {
+            if (String(loginArr[i]._id) == company.id) {
+                company.name = loginArr[i].companyName;
+                break;
+            }
+        }
+    }).then(e => {
+        if (company.name != null) {
+            res.render('pages/booking-page', {
+                company: company
+            });
+        } else {
+            res.redirect('/');
+        }
+    });
 });
 
 // Add a client to the database.
@@ -1055,31 +1210,45 @@ app.put('/getChartData', (req, res) => {
 
     let categories = [];
 
-    req.session.appointments.forEach(appt => {
-        let date = new Date(`${appt.apptDatetime}`);
+    let apptArr = req.session.appointments;
+
+    for (let i = 0; i < apptArr.length; i++) {
+        let date = new Date(`${apptArr[i].apptDatetime}`);
         date = moment(date.toISOString());
-        date = date.format("MMM DD, YYYY @ h:mm a");
+        date = date.format("MMM DD, YYYY");
 
-        chartData.lineGraph.dates.push(date);
-        chartData.lineGraph.revenue.push(appt.apptPrice);
+        let existsInLine = false;
 
-        let exists = false;
+        for (let j = 0; j < chartData.lineGraph.dates.length; j++) {
+            if (date == chartData.lineGraph.dates[j]) {
+                chartData.lineGraph.revenue[j] += apptArr[i].apptPrice;
+                existsInLine = true;
+                break;
+            }
+        }
+
+        if (!existsInLine) {
+            chartData.lineGraph.dates.push(date);
+            chartData.lineGraph.revenue.push(apptArr[i].apptPrice);
+        }
+        
+        let existsInCategories = false;
 
         for (let x = 0; x < categories.length; x++) {
-            if (appt.apptType == categories[x].name) {
-                exists = true;
+            if (apptArr[i].apptType == categories[x].name) {
+                existsInCategories = true;
                 categories[x].count++;
             }
         }
 
-        if (!exists) {
+        if (!existsInCategories) {
             let obj = {
-                name: appt.apptType,
+                name: apptArr[i].apptType,
                 count: 1
             }
             categories.push(obj);
         }
-    });
+    }
 
     categories.forEach(cat => {
         chartData.pieGraph.categories.push(cat.name);

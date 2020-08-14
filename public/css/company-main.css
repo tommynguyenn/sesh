@@ -5,3 +5,9 @@
 .dashboard-content {
     height: 92.5%;
 }
+
+@media only screen and (max-width: 450px) {
+    .dashboard {
+        height: 89.5vh;
+    }    
+}

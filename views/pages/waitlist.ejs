@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>employees | sesh</title>
+    <title>waitlist | sesh</title>
 
     <!-- Bootstrap CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -39,9 +39,8 @@
                 </div>
             </div>
             <div class="vl"></div>
-            <a id="navbar-brand"><%= companyName %></a>
+            <a id="navbar-brand">><%= companyName %></a>
         </div>
-
     </nav>
 
     <!-- Collapsible dashboard sidebar. -->
@@ -53,8 +52,8 @@
         <p class="sidebar-title">COMPANY</p>
         <a href="/appointments">Appointments</a>
         <a href="/clients">Clients</a>
-        <a class="active" href="/employees">Employees</a>
-        <a href="/waitlist">Waitlist</a>
+        <a href="/employees">Employees</a>
+        <a class="active" href="/waitlist">Waitlist</a>
         <hr>
         <p class="sidebar-title">ACCOUNT</p>
         <a href="/settings">Settings</a>
@@ -63,30 +62,30 @@
 
     <!-- Main container for content. -->
     <div id="main-container">
-        <!-- Employees dashboard -->
+        <!-- Appointments dashboard -->
         <div class="dashboard">
             <div class="dashboard-title">
-                <h1>Employees (<%= count[0] %>)</h1>
+                <h1>Waitlist (<%= count %>)</h1>
             </div>
             <div class="dashboard-content">
                 <table class="table table-hover">
                     <thead>
-                      <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Cell #</th>
-                        <th scope="col">Position</th>
-                        <th scope="col">Actions</th>
-                      </tr>
+                        <tr>
+                            <th scope="col">Position</th>
+                            <th scope="col">Client</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Notes</th>
+                            <th scope="col">Actions</th>
+                        </tr>
                     </thead>
                     <tbody>
-                      <%- employees %>
+                        <%- waitlist %>
                     </tbody>
-                  </table>
+                </table>
             </div>
             <hr>
         </div>
-    </div>
-    </div>
     </div>
 
     <!-- Appointment modal -->

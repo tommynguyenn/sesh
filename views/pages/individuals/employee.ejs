@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>sesh | employees [<%=employee.empName%>]</title>
+  <title>employees [<%=employee.empName%>] | sesh</title>
 
   <!-- Bootstrap CDN -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -38,13 +38,13 @@
         </div>
       </div>
       <div class="vl"></div>
-      <a id="navbar-brand">sesh</a>
+      <a id="navbar-brand"><%= companyName %></a>
     </div>
   </nav>
 
   <!-- Collapsible dashboard sidebar. -->
   <div id="sidebar">
-    <p class="app-title"><%= companyName %></p>
+    <p class="app-title">sesh</p>
     <p class="sidebar-title">MENU</p>
     <a href="/dashboard">Dashboard</a>
     <hr>
@@ -52,6 +52,7 @@
     <a href="/appointments">Appointments</a>
     <a href="/clients">Clients</a>
     <a href="/employees">Employees</a>
+    <a href="/waitlist">Waitlist</a>
     <hr>
     <p class="sidebar-title">ACCOUNT</p>
     <a href="/settings">Settings</a>
@@ -60,7 +61,7 @@
 
   <!-- Main container for content. -->
   <div id="main-container">
-    <div class="dashboard">
+    <div id="profile" class="dashboard">
       <div class="dashboard-title">
         <h1>Employee Profile</h1>
       </div>
@@ -75,7 +76,30 @@
         <p><%=employee.empPosition%></p>
       </div>
     </div>
-    <div class="dashboard client-appointments">
+    <div id="upcoming" class="dashboard">
+      <div class="dashboard-title">
+        <h1>Upcoming Appointments</h1>
+      </div>
+      <div class="dashboard-content">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Status</th>
+              <th scope="col">Client</th>
+              <th scope="col">Employee</th>
+              <th scope="col">Date & Time</th>
+              <th scope="col">Price</th>
+              <th scope="col">Type</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%-empUpcoming%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="appointments" class="dashboard client-appointments">
       <div class="dashboard-title">
         <h1>Employee's Appointments</h1>
       </div>
@@ -96,14 +120,6 @@
             <%-empAppointments%>
           </tbody>
         </table>
-      </div>
-    </div>
-    <div class="dashboard">
-      <div class="dashboard-title">
-        <h1>Employee's Insights</h1>
-      </div>
-      <div class="dashboard-content">
-        
       </div>
     </div>
   </div>

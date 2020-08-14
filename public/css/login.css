@@ -1,3 +1,7 @@
+body {
+    background-color: var(--loginbg-color);
+}
+
 #main-container {
     margin-top: 20vh;
     display: grid;
@@ -9,12 +13,12 @@
 
 .dashboard {
     text-align: center;
-    background-color: var(--sidebar-color);
+    background-color: var(--logindash-color);
     padding: 15px;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
     height: fit-content;
-    width: 400px;
-    margin: auto
+    width: 350px;
+    margin: auto;
 }
 
 .login-btn {

@@ -25,7 +25,7 @@ $(function () {
             options: {
                 title: {
                     display: true,
-                    text: 'Overall revenue by dollar ($CAD)'
+                    text: 'Overall revenue by day ($CAD)'
                 }
             }
         });

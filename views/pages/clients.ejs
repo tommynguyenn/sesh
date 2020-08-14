@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sesh | clients</title>
+    <title>clients | sesh</title>
 
     <!-- Bootstrap CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -39,14 +39,14 @@
                 </div>
             </div>
             <div class="vl"></div>
-            <a id="navbar-brand">sesh</a>
+            <a id="navbar-brand"><%= companyName %></a>
         </div>
 
     </nav>
 
     <!-- Collapsible dashboard sidebar. -->
     <div id="sidebar">
-        <p class="app-title"><%= companyName %></p>
+        <p class="app-title">sesh</p>
         <p class="sidebar-title">MENU</p>
         <a href="/dashboard">Dashboard</a>
         <hr>
@@ -54,6 +54,7 @@
         <a href="/appointments">Appointments</a>
         <a class="active" href="/clients">Clients</a>
         <a href="/employees">Employees</a>
+        <a href="/waitlist">Waitlist</a>
         <hr>
         <p class="sidebar-title">ACCOUNT</p>
         <a href="/settings">Settings</a>

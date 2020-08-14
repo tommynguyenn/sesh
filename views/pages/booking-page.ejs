@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login | sesh</title>
+    <title><%=company.name%> by sesh</title>
 
     <!-- Bootstrap CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -13,39 +13,39 @@
 
     <!-- CSS stylesheets -->
     <link rel="stylesheet" href="css/root.css">
-    <link rel="stylesheet" href="css/login.css">
-    <link rel="stylesheet" href="css/topbar.css">
-    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="css/booking-page.css">
 </head>
 
 <body>
-    <!-- Fixed brand bar. -->
-    <nav class="navbar fixed-top" style="display:flex;justify-content: center;margin-left: 0">
-        <div class="navbar-links">
-            <a id="navbar-brand" style="margin-right:0px">sesh</a>
-        </div>
-    </nav>
-
     <!-- Main container for content. -->
     <div id="main-container">
-        <div class="dashboard">
-            <div class="dashboard-title">
-                <h1>Login</h1>
+        <!-- Fixed brand bar. -->
+        <nav>
+            <a class="navbar-brand" href="/<%=company.id%>">
+                <div>
+                    <%=company.name%> 
+                </div>
+            </a>
+            <div>
+                <p class="navbar-brand-sesh">powered by <span>sesh</span>app</p>
             </div>
-            <hr>
-            <div class="dashboard-content">
-                <form action="/login"  method="get">
-                    <h1>Username</h1>
-                    <input type="text" name="username" required>
-                    <h1>Password</h1>
-                    <input type="password" name="password" required>
-                    <button type="submit" class="login-btn">Login</button>
-                </form>
-                <hr>
-                <p style="margin-top: 25px;"><%- message %></p>
+        </nav>
+        <div class="mc-services">
+            <div id="mc-services-text">
+                <h1 class="mc-headers">Services</h1>
+                <p class="mc-text">--</p>
             </div>
-            <hr>
         </div>
+        <div class="mc-services">
+            <div id="mc-services-text">
+                <h1 class="mc-headers">Appointment Information</h1>
+                <p class="mc-text">--</p>
+            </div>
+        </div>
+    </div>
+    <div class="mc-footer">
+        <p>© 2020 All rights reserved.</p>
     </div>
 
     <!-- JQuery CDN -->
@@ -59,6 +59,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
     </script>
+
+    <!-- JS scripts -->
+    <script src="scripts/landing.js"></script>
 </body>
 
 </html>
