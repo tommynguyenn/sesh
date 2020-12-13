@@ -8,6 +8,11 @@ This project was built for small-scale, self-employed users in the beauty indust
 
 Users can create and track appointments, waitlists, clients, and employees. They can also view their company's insights such as revenue and sales.
 
+### Test Login Credentials
+Username: tn99
+
+Password: 123
+
 ## Technologies
 - MongoDB, ExpressJS, NodeJS
 - Express-Sessions, MomentJS, ChartJS
