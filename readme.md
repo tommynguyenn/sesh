@@ -20,5 +20,8 @@ Password: 123
 - Bootstrap
 
 ## Scripts
+### 'npm install'
+Install all node packages required to start the application.
+
 ### 'npm start'
-This will run the command 'node server.js' and you will be able to access the application through localhost:3000.
+Start the application and access through localhost:3000.
