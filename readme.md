@@ -8,7 +8,7 @@ This project was built for small-scale, self-employed users in the beauty indust
 
 Users can create and track appointments, waitlists, clients, and employees. They can also view their company's insights such as revenue and sales.
 
-### Test Login Credentials
+### Test Login Credentials (please do not enter any sensitive information)
 Username: tn99
 
 Password: 123
